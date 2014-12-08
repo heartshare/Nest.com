@@ -87,8 +87,6 @@ class StaffController extends Controller
     {/*{{{*/
         $model = $this->findModel($id);
 
-        echo "<br/> <br/> <br/> <br/> <br/>";
-
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $this->dealSingleUploadFile($model, 'avatar');
             if ($model->save())

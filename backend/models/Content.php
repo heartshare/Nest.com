@@ -62,6 +62,7 @@ class Content extends \yii\db\ActiveRecord
     public function attributeLabels()
     {/*{{{*/
         return [
+
             'id' => '编号',
             'category_id' => '分类编号',
             'staff_id' => '创建者编号',

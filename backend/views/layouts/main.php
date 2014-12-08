@@ -34,13 +34,30 @@ AppAsset::register($this);
             $menuItems = [
                 ['label' => 'Home', 'url' => ['/site/index']],
 
-                ['label' => '员工', 'url' => ['/staff/index']],
-                ['label' => '文章', 'url' => ['/article/index']],
-
-                ['label' => '平台', 'url' => ['/platform/index']],
-                ['label' => '账户', 'url' => ['/account/index']],
-                ['label' => '分类', 'url' => ['/category/index']],
-                ['label' => '内容', 'url' => ['/content/index']],
+                ['label' => '员工', 'items' => [
+                    ['label' => '浏览', 'url' => ['/staff']],
+                    ['label' => '添加', 'url' => ['/staff/create']],
+                ]],
+                ['label' => '文章', 'items' => [
+                    ['label' => '浏览', 'url' => ['/article']],
+                    ['label' => '添加', 'url' => ['/article/create']],
+                ]],
+                ['label' => '平台', 'items' => [
+                    ['label' => '浏览', 'url' => ['/platform']],
+                    ['label' => '添加', 'url' => ['/platform/create']],
+                ]],
+                ['label' => '账户', 'items' => [
+                    ['label' => '浏览', 'url' => ['/account']],
+                    ['label' => '添加', 'url' => ['/account/create']],
+                ]],
+                ['label' => '分类', 'items' => [
+                    ['label' => '浏览', 'url' => ['/category']],
+                    ['label' => '添加', 'url' => ['/category/create']],
+                ]],
+                ['label' => '内容', 'items' => [
+                    ['label' => '浏览', 'url' => ['/content']],
+                    ['label' => '添加', 'url' => ['/content/create']],
+                ]],
             ];
 
             if (Yii::$app->user->isGuest) {

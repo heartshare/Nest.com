@@ -15,8 +15,6 @@ $this->params['breadcrumbs'][] = 'Verify';
 
 <div class="content-verify">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="content-form">
 
         <?php $form = ActiveForm::begin([ 'options' => [ 'enctype' => 'multipart/form-data' ] ]); ?>

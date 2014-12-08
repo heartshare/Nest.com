@@ -7,7 +7,7 @@
 
 \Yii::$container->set('yii\data\ActiveDataProvider', [
     'pagination' => [
-        'size' => 50,
+        'pageSize' => 50,
     ],
 ]);
 

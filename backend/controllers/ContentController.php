@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Content;
+use backend\models\ContentSearch;
 use backend\models\Category;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -17,6 +18,8 @@ use yii\base\Model;
  */
 class ContentController extends Controller
 {
+    private $_category;
+
     public function behaviors()
     {/*{{{*/
         return [
@@ -35,12 +38,18 @@ class ContentController extends Controller
      */
     public function actionIndex()
     {/*{{{*/
-        $dataProvider = new ActiveDataProvider([
-            'query' => Content::find(),
-        ]);
+
+        $searchModel = new ContentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        #$dataProvider = new ActiveDataProvider([
+        #    'query' => Content::find(),
+        #]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'category' => $this->getCategory(),
         ]);
     }/*}}}*/
 
@@ -74,7 +83,7 @@ class ContentController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'category' => Category::find()->asArray()->all(),
+            'category' => $this->getCategory(),
         ]);
     }/*}}}*/
 
@@ -113,7 +122,7 @@ class ContentController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'category' => Category::find()->asArray()->all(),
+            'category' => $this->getCategory(),
         ]);
     }/*}}}*/
 
@@ -158,6 +167,13 @@ class ContentController extends Controller
                 $imgHtml .= Html::img($pic, ['alt' => '第' . $key . '张图片', 'style' => 'width: 80px; height: 80px;']) . '&nbsp;';
         }
         $model->albumHtml = $imgHtml;
+    }/*}}}*/
+
+    public function getCategory()
+    {/*{{{*/
+        if (!$this->_category)
+            $this->_category = Category::find()->asArray()->all();
+        return $this->_category;
     }/*}}}*/
 
 }
