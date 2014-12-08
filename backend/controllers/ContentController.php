@@ -49,7 +49,7 @@ class ContentController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'category' => $this->getCategory(),
+            'category' => $this->category,
         ]);
     }/*}}}*/
 
@@ -83,7 +83,7 @@ class ContentController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'category' => $this->getCategory(),
+            'category' => $this->category,
         ]);
     }/*}}}*/
 
@@ -122,7 +122,7 @@ class ContentController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'category' => $this->getCategory(),
+            'category' => $this->category,
         ]);
     }/*}}}*/
 
@@ -171,8 +171,9 @@ class ContentController extends Controller
 
     public function getCategory()
     {/*{{{*/
-        if (!$this->_category)
+        if (!$this->_category) {
             $this->_category = Category::find()->asArray()->all();
+        }
         return $this->_category;
     }/*}}}*/
 

@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
+use kartik\datetime\DateTimePicker;
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\ContentSearch */
 /* @var $form yii\widgets\ActiveForm */
@@ -46,7 +48,17 @@ function showSearchForm () {
 
     <?php // echo $form->field($model, 'album') ?>
 
-    <?php // echo $form->field($model, 'ctime') ?>
+    <?php echo $form->field($model, 'ctimeBegin')->widget(DateTimePicker::className(), [
+        'options' => [
+            'value' => empty($model->ctimeBegin) ? '' : date('Y-m-d H:i', intval($model->ctimeBegin)),
+        ],
+    ]) ?>
+
+    <?php echo $form->field($model, 'ctimeEnd')->widget(DateTimePicker::className(), [
+        'options' => [
+            'value' => date('Y-m-d H:i', intval($model->ctimeEnd) ?: time() + 5 * 60),
+        ],
+    ]) ?>
 
     <?php // echo $form->field($model, 'is_draft') ?>
 

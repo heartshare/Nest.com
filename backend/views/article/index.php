@@ -9,7 +9,13 @@ use yii\grid\GridView;
 $this->title = 'Articles';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="article-index">
+
+    <?= $this->render('_search', [
+        'model' => $searchModel,
+    ]);?>
+
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

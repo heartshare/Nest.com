@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
@@ -15,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $searchModel,
         'category' => $category,
         #'staff' => $staff,
-    ]); ?> 
+    ]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -23,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => '媒体分类',
+                'attribute' => 'category_id',
                 'value' => function ($model) {
                     return $model->category->name;
                 }

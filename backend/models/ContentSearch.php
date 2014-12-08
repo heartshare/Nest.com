@@ -12,25 +12,38 @@ use backend\models\Content;
  */
 class ContentSearch extends Content
 {
+
+    public $ctimeBegin, $ctimeEnd;
+
     /**
      * @inheritdoc
      */
     public function rules()
-    {
+    {/*{{{*/
         return [
             [['id', 'category_id', 'staff_id', 'expect_send_at', 'ctime', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
             [['title', 'content', 'source_url', 'album', 'remark', 'publiced_url'], 'safe'],
+            [['ctimeBegin', 'ctimeEnd'], 'date', 'format' => 'php:Y-m-d H:i'],
         ];
-    }
+    }/*}}}*/
+
+    public function attributeLabels()
+    {/*{{{*/
+        $labels = parent::attributeLabels();
+        $labels['ctimeBegin'] = '创建时间起';
+        $labels['ctimeEnd'] = '创建时间终';
+        return $labels;
+    }/*}}}*/
+
 
     /**
      * @inheritdoc
      */
     public function scenarios()
-    {
+    {/*{{{*/
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
-    }
+    }/*}}}*/
 
     /**
      * Creates data provider instance with search query applied
@@ -40,14 +53,11 @@ class ContentSearch extends Content
      * @return ActiveDataProvider
      */
     public function search($params)
-    {
-        $query = Content::find()->select([
-            'id', 'category_id', 'title', 'expect_send_at', 'ctime', 'is_draft',
-            'is_verified', 'is_published'
-        ]);
+    {/*{{{*/
+        $query = Content::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->joinWith('category'),
             'pagination' => [
                 'pageSize' => 50,
             ],
@@ -56,6 +66,9 @@ class ContentSearch extends Content
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
+
+        $this->ctimeBegin = !empty($this->ctimeBegin) ? strtotime(intval($this->ctimeBegin)): 0;
+        $this->ctimeEnd= empty($this->ctimeEnd) ? strtotime(intval($this->ctimeEnd)): time();
 
         $query->andFilterWhere([
             'id' => $this->id,
@@ -82,6 +95,10 @@ class ContentSearch extends Content
             ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'is_important', $this->content])
             ->andFilterWhere(['like', 'is_verified', $this->content])
+
+            # between
+            ->andFilterWhere(['between', '{{%content}}.ctime', $this->ctimeBegin, $this->ctimeEnd])
+
             ->andFilterWhere(['like', 'is_published', $this->content]);
             #->andFilterWhere(['like', 'source_url', $this->source_url])
             #->andFilterWhere(['like', 'album', $this->album])
@@ -89,5 +106,6 @@ class ContentSearch extends Content
             #->andFilterWhere(['like', 'publiced_url', $this->publiced_url]);
 
         return $dataProvider;
-    }
+    }/*}}}*/
+
 }

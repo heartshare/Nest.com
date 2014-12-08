@@ -3,7 +3,10 @@
 namespace backend\controllers;
 
 use Yii;
+
 use backend\models\Article;
+use backend\models\ArticleSearch;
+
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -32,14 +35,12 @@ class ArticleController extends Controller
      */
     public function actionIndex()
     {/*{{{*/
-        $dataProvider = new ActiveDataProvider([
-            'query' => Article::find()->select([
-                'id', 'title', 'is_draft', 'staff_visible', 'is_top',
-                'ctime', 'top_rank'
-            ]),
-        ]);
+        $searchModel = new ArticleSearch;
+
+        $dataProvider = $searchModel->search(Yii::$app->request->get());
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }/*}}}*/
