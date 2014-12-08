@@ -37,7 +37,10 @@ class StaffController extends Controller
     public function actionIndex()
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
-            'query' => Staff::find(),
+            'query' => Staff::find()->select([
+                'id', 'name', 'ctime', 'is_disabled', 'time_kind', 
+                'formal_at', 'real_name', 'phone'
+            ]),
         ]);
 
         return $this->render('index', [

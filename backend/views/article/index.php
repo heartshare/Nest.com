@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'title',
-            'content:html',
+            #'content:html',
             [
                 'attribute' => 'is_draft',
                 'value' => function ($model) {

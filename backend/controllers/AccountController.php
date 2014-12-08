@@ -33,7 +33,9 @@ class AccountController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Account::find(),
+            'query' => Account::find()->select([
+                'id', 'platform_id', 'staff_id', 'name', 'uid'
+            ]),
         ]);
 
         return $this->render('index', [

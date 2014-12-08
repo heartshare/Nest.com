@@ -59,7 +59,7 @@ class Staff extends \yii\db\ActiveRecord
 
             # 以时间戳保存的时间, 页面选择时是常规时间格式
             [['formal_at'], 'date', 'format' => 'php:Y-m-d'],
-            ['name', 'match', 'pattern' => '/^\w{2,20}$/', 'message' => '必须为2-20位的数字/字母/下划线任意组合'],
+            ['name', 'match', 'pattern' => '/^[0-9a-zA-z-.]{2,20}$/', 'message' => '必须为2-20位的数字/字母/下划线任意组合'],
             ['name', 'unique'],
             ['avatar', 'image', 'skipOnEmpty' => true, 'extensions' => 'gif, jpg, png, jpeg'],
         ];
@@ -76,6 +76,7 @@ class Staff extends \yii\db\ActiveRecord
             'is_disabled' => '禁用',
             'time_kind' => '工作时间',
             'formal_at' => '转正时间',
+
             'remark' => '备注',
             'real_name' => '真实姓名',
             'qq' => 'QQ',

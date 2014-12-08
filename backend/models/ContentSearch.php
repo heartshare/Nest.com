@@ -41,7 +41,10 @@ class ContentSearch extends Content
      */
     public function search($params)
     {
-        $query = Content::find();
+        $query = Content::find()->select([
+            'id', 'category_id', 'title', 'expect_send_at', 'ctime', 'is_draft',
+            'is_verified', 'is_published'
+        ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

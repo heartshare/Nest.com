@@ -35,7 +35,9 @@ class CategoryController extends Controller
     public function actionIndex()
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
-            'query' => Category::find(),
+            'query' => Category::find()->select([
+                'id', 'platform_id', 'account_id', 'staff_id', 'name', 'summary', 'ctime'
+            ]),
         ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -89,7 +91,6 @@ class CategoryController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        \d($model->getErrors());
         return $this->render('update', [
             'model' => $model,
             'platform' => Platform::find()->asArray()->all(),

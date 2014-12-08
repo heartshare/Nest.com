@@ -33,7 +33,9 @@ class PlatformController extends Controller
     public function actionIndex()
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
-            'query' => Platform::find(),
+            'query' => Platform::find()->select([
+                'id', 'name', 'ctime', 'staff_id'
+            ]),
         ]);
 
         return $this->render('index', [

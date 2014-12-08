@@ -33,7 +33,10 @@ class ArticleController extends Controller
     public function actionIndex()
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
-            'query' => Article::find(),
+            'query' => Article::find()->select([
+                'id', 'title', 'is_draft', 'staff_visible', 'is_top',
+                'ctime', 'top_rank'
+            ]),
         ]);
 
         return $this->render('index', [
