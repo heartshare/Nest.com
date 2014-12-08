@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             #'staff_id',
             'title',
-            #'content:html',
+            'content:html',
             'expect_send_at:datetime',
             #'source_url:url',
             // 'album',

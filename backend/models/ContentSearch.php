@@ -67,8 +67,9 @@ class ContentSearch extends Content
             return $dataProvider;
         }
 
-        $this->ctimeBegin = !empty($this->ctimeBegin) ? strtotime(intval($this->ctimeBegin)): 0;
-        $this->ctimeEnd= empty($this->ctimeEnd) ? strtotime(intval($this->ctimeEnd)): time();
+        $this->ctimeBegin = !empty($this->ctimeBegin) ? strtotime($this->ctimeBegin): 0;
+
+        $this->ctimeEnd= !empty($this->ctimeEnd) ? strtotime($this->ctimeEnd): time();
 
         $query->andFilterWhere([
             'id' => $this->id,
