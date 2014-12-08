@@ -22,13 +22,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'platform_id',
-            'account_id',
+            [
+                'attribute' => '媒体平台',
+                'value' => function ($model) {
+                    return $model->platform->name;
+                }
+            ],
+            [
+                'attribute' => '媒体帐号',
+                'value' => function ($model) {
+                    return $model->account->name;
+                }
+            ],
             'staff_id',
             'name',
-            // 'summary',
-            // 'ctime:datetime',
+            'summary',
+            'ctime:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

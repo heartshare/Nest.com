@@ -14,10 +14,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 10]) ?>
 
-    <?= $form->field($model, 'staff_id')->textInput() ?>
-
-    <?= $form->field($model, 'ctime')->textInput() ?>
-
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

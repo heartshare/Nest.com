@@ -4,10 +4,13 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Content;
+use backend\models\Category;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\base\Model;
 
 /**
  * ContentController implements the CRUD actions for Content model.
@@ -15,7 +18,7 @@ use yii\filters\VerbFilter;
 class ContentController extends Controller
 {
     public function behaviors()
-    {
+    {/*{{{*/
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -24,14 +27,14 @@ class ContentController extends Controller
                 ],
             ],
         ];
-    }
+    }/*}}}*/
 
     /**
      * Lists all Content models.
      * @return mixed
      */
     public function actionIndex()
-    {
+    {/*{{{*/
         $dataProvider = new ActiveDataProvider([
             'query' => Content::find(),
         ]);
@@ -39,7 +42,7 @@ class ContentController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Displays a single Content model.
@@ -47,11 +50,14 @@ class ContentController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {
+    {/*{{{*/
+        $model = $this->findModel($id);
+        $this->albumSplitHtml($model);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Creates a new Content model.
@@ -59,17 +65,37 @@ class ContentController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
+    {/*{{{*/
         $model = new Content();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
-    }
+
+        return $this->render('create', [
+            'model' => $model,
+            'category' => Category::find()->asArray()->all(),
+        ]);
+    }/*}}}*/
+
+    public function actionVerify($id)
+    {/*{{{*/
+
+        $model = $this->findModel($id);
+        $model->scenario = 'verify';
+
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->save())
+            return $this->redirect(['view', 'id' => $id]);
+
+        # 不管审核通不通过, 内容的审核状态都不能再回到待审核状态
+        $is_verified = Yii::$app->params['enumData']['is_verified'];
+        unset($is_verified[0]);
+
+        return $this->render('verify', [
+            'model' => $model,
+            'is_verified' => $is_verified,
+        ]);
+    }/*}}}*/
 
     /**
      * Updates an existing Content model.
@@ -78,17 +104,18 @@ class ContentController extends Controller
      * @return mixed
      */
     public function actionUpdate($id)
-    {
+    {/*{{{*/
         $model = $this->findModel($id);
+        $this->albumSplitHtml($model);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
+
+        return $this->render('update', [
+            'model' => $model,
+            'category' => Category::find()->asArray()->all(),
+        ]);
+    }/*}}}*/
 
     /**
      * Deletes an existing Content model.
@@ -97,11 +124,11 @@ class ContentController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    {
+    {/*{{{*/
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
+    }/*}}}*/
 
     /**
      * Finds the Content model based on its primary key value.
@@ -111,11 +138,26 @@ class ContentController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
-    {
+    {/*{{{*/
         if (($model = Content::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
+    }/*}}}*/
+
+    # split album from string to array, add to $model->album
+    # generate album image html, add to $model->albumHtml
+    # @param \yii\base\Model $model
+    protected function albumSplitHtml(Model &$model)
+    {/*{{{*/
+        $model->album = explode(';', $model->album);
+        $imgHtml = '';
+        foreach ($model->album as $key => $pic) {
+            if ($pic)
+                $imgHtml .= Html::img($pic, ['alt' => '第' . $key . '张图片', 'style' => 'width: 80px; height: 80px;']) . '&nbsp;';
+        }
+        $model->albumHtml = $imgHtml;
+    }/*}}}*/
+
 }

@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Category;
+use backend\models\Platform;
+use backend\models\Account;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -15,7 +17,7 @@ use yii\filters\VerbFilter;
 class CategoryController extends Controller
 {
     public function behaviors()
-    {
+    {/*{{{*/
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -24,22 +26,21 @@ class CategoryController extends Controller
                 ],
             ],
         ];
-    }
+    }/*}}}*/
 
     /**
      * Lists all Category models.
      * @return mixed
      */
     public function actionIndex()
-    {
+    {/*{{{*/
         $dataProvider = new ActiveDataProvider([
             'query' => Category::find(),
         ]);
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Displays a single Category model.
@@ -47,11 +48,11 @@ class CategoryController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {
+    {/*{{{*/
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Creates a new Category model.
@@ -59,17 +60,20 @@ class CategoryController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
+    {/*{{{*/
         $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
-    }
+
+        \d($model->getErrors());
+        return $this->render('create', [
+            'model' => $model,
+            'platform' => Platform::find()->asArray()->all(),
+            'account' => Account::find()->asArray()->all(),
+        ]);
+    }/*}}}*/
 
     /**
      * Updates an existing Category model.
@@ -78,17 +82,20 @@ class CategoryController extends Controller
      * @return mixed
      */
     public function actionUpdate($id)
-    {
+    {/*{{{*/
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
-    }
+
+        \d($model->getErrors());
+        return $this->render('update', [
+            'model' => $model,
+            'platform' => Platform::find()->asArray()->all(),
+            'account' => Account::find()->asArray()->all(),
+        ]);
+    }/*}}}*/
 
     /**
      * Deletes an existing Category model.
@@ -97,11 +104,11 @@ class CategoryController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    {
+    {/*{{{*/
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
+    }/*}}}*/
 
     /**
      * Finds the Category model based on its primary key value.
@@ -111,11 +118,12 @@ class CategoryController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
-    {
+    {/*{{{*/
         if (($model = Category::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
+    }/*}}}*/
+
 }

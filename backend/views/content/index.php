@@ -22,32 +22,61 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'category_id',
-            'staff_id',
+            [
+                'attribute' => '媒体分类',
+                'value' => function ($model) {
+                    return $model->category->name;
+                }
+            ],
+            #'staff_id',
             'title',
-            'content',
-            // 'expect_send_at',
-            // 'source_url:url',
+            #'content:html',
+            'expect_send_at:datetime',
+            #'source_url:url',
             // 'album',
-            // 'ctime:datetime',
-            // 'is_draft',
+            'ctime:datetime',
+            [
+                'attribute' => 'is_draft',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_draft'][$model->is_draft];
+                }
+            ],
             // 'is_important',
-            // 'mtime:datetime',
-            // 'modified_staff_id',
-            // 'is_verified',
+            #'mtime:datetime',
+            #'modified_staff_id',
+            [
+                'attribute' => 'is_verified',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_verified'][$model->is_verified];
+                }
+            ],
             // 'verified_at',
             // 'rate',
             // 'verified_staff_id',
             // 'remark',
-            // 'is_published',
+            [
+                'attribute' => 'is_published',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_published'][$model->is_published];
+                }
+            ],
             // 'actual_send_at',
             // 'publiced_url:url',
             // 'reprint_num',
             // 'comment_num',
             // 'rank',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                    'verify' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-screenshot'
+                        ]);
+                    },
+                ],
+                'template' => '{view} {update} {verify} {delete}',
+            ],
         ],
     ]); ?>
 

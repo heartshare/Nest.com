@@ -13,7 +13,6 @@
 
 \Yii::$container->set('kartik\datetime\DateTimePicker', [
     'type'  => 1, # most simple function provider
-    'value' => date('Y-m-d H:i:s', intval($model->expect_send_at) ?: time()),
     'language'      => 'zh-CN',
     'pluginOptions' => [
         'autoclose' => true,

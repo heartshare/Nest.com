@@ -22,15 +22,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'staff_id',
             'title',
-            'content:ntext',
-            'is_draft',
-            // 'staff_visible',
-            // 'is_top',
-            // 'ctime:datetime',
-            // 'top_rank',
+            'content:html',
+            [
+                'attribute' => 'is_draft',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_draft'][$model->is_draft];
+                }
+            ],
+            [
+                'attribute' => 'staff_visible',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['staff_visible'][$model->staff_visible];
+                }
+            ],
+            [
+                'attribute' => 'is_top',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_top'][$model->is_top];
+                }
+            ],
+            'ctime:datetime',
+            'top_rank',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

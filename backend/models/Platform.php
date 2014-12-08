@@ -32,7 +32,7 @@ class Platform extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'staff_id', 'ctime'], 'required'],
+            ['name', 'required'],
             [['staff_id', 'ctime'], 'integer'],
             [['name'], 'string', 'max' => 10]
         ];
@@ -50,6 +50,20 @@ class Platform extends \yii\db\ActiveRecord
             'ctime' => '创建时间',
         ];
     }
+
+    public function beforeSave($isInsert)
+    {/*{{{*/
+        if (parent::beforeSave($isInsert)) {
+            if ($isInsert) {
+                $this->ctime = time();
+                $this->staff_id = Yii::$app->getUser()->identity->id;
+            } else {
+
+            }
+            return true;
+        }
+        return false;
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery

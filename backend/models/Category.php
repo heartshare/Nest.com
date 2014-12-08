@@ -34,20 +34,20 @@ class Category extends \yii\db\ActiveRecord
      * @inheritdoc
      */
     public function rules()
-    {
+    {/*{{{*/
         return [
-            [['platform_id', 'account_id', 'staff_id', 'name', 'summary', 'ctime'], 'required'],
+            [['account_id', 'name', 'summary'], 'required'],
             [['platform_id', 'account_id', 'staff_id', 'ctime'], 'integer'],
             [['name'], 'string', 'max' => 10],
             [['summary'], 'string', 'max' => 255]
         ];
-    }
+    }/*}}}*/
 
     /**
      * @inheritdoc
      */
     public function attributeLabels()
-    {
+    {/*{{{*/
         return [
             'id' => '编号',
             'platform_id' => '媒体平台编号',
@@ -57,37 +57,54 @@ class Category extends \yii\db\ActiveRecord
             'summary' => '分类描述',
             'ctime' => '创建时间',
         ];
-    }
+    }/*}}}*/
+
+    public function beforeSave($isInsert)
+    {/*{{{*/
+        if (parent::beforeSave($isInsert)) {
+            # new record
+            if ($isInsert) {
+                $this->ctime = time();
+                $this->staff_id = Yii::$app->getUser()->identity->id;
+            }
+            # update record
+            else {
+            }
+            return true;
+        }
+        return false;
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAccount()
-    {
+    {/*{{{*/
         return $this->hasOne(Account::className(), ['id' => 'account_id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPlatform()
-    {
+    {/*{{{*/
         return $this->hasOne(Platform::className(), ['id' => 'platform_id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getStaff()
-    {
+    {/*{{{*/
         return $this->hasOne(Staff::className(), ['id' => 'staff_id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getContents()
-    {
+    {/*{{{*/
         return $this->hasMany(Content::className(), ['category_id' => 'id']);
-    }
+    }/*}}}*/
+
 }

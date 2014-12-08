@@ -28,10 +28,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'platform_id',
-            'account_id',
-            'staff_id',
+            [
+                'attribute' => '媒体平台',
+                'value' => $model->platform->name
+            ],
+            [
+                'attribute' => '媒体帐号',
+                'value' => $model->account->name
+            ],
+            #'staff_id',
             'name',
             'summary',
             'ctime:datetime',

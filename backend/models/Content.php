@@ -37,73 +37,116 @@ use Yii;
  */
 class Content extends \yii\db\ActiveRecord
 {
-    /**
-     * @inheritdoc
-     */
+
+    # 存储将图片集构造为html后的字符串
+    public $albumHtml;
+
     public static function tableName()
-    {
+    {/*{{{*/
         return '{{%content}}';
-    }
+    }/*}}}*/
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
-    {
+    {/*{{{*/
         return [
-            [['category_id', 'staff_id', 'title', 'content', 'expect_send_at', 'source_url', 'album', 'ctime', 'is_draft', 'is_important', 'mtime', 'modified_staff_id'], 'required'],
-            [['category_id', 'staff_id', 'expect_send_at', 'ctime', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
+            [['category_id', 'title', 'album', 'content', 'expect_send_at', 'source_url', 'is_draft', 'is_important'], 'required'],
+            [['category_id', 'staff_id', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
             [['title'], 'string', 'max' => 30],
-            [['content', 'source_url', 'album', 'remark', 'publiced_url'], 'string', 'max' => 255]
-        ];
-    }
+            [['content', 'source_url', 'remark', 'publiced_url'], 'string', 'max' => 255],
+            [['source_url', 'publiced_url'], 'url'],
+            [['is_verified', 'rate', 'remark'], 'required', 'on' => 'verify'],
 
-    /**
-     * @inheritdoc
-     */
+        ];
+    }/*}}}*/
+
     public function attributeLabels()
-    {
+    {/*{{{*/
         return [
             'id' => '编号',
             'category_id' => '分类编号',
             'staff_id' => '创建者编号',
             'title' => '标题',
             'content' => '内容',
-            'expect_send_at' => '期望的发布时间',
+            'expect_send_at' => '期望发布时间',
             'source_url' => '来源链接',
-            'album' => '图片集: uri 拼接',
+            'album' => '图片集',
             'ctime' => '创建时间',
-            'is_draft' => '草稿/正式内容: 0, 正式内容; 1, 草稿',
-            'is_important' => '是否为重要内容: 0, 否; 1, 是',
+            'is_draft' => '草稿',
+            'is_important' => '重要内容',
             'mtime' => '最后修改时间',
             'modified_staff_id' => '修改者编号',
-            'is_verified' => '审核状态: 0, 未审核; 1, 通过; 2, 不通过',
+
+            'is_verified' => '审核状态',
             'verified_at' => '审核时间',
-            'rate' => '内容评级: 0, 普通; 1, 不错; 2, 赞',
-            'verified_staff_id' => '审核人的用户编号',
+            'rate' => '内容评级',
+            'verified_staff_id' => '审核者编号',
             'remark' => '审核批注',
-            'is_published' => '是否发布成功: 0, 未发布; 1, 成功; 2, 失败',
+
+            'is_published' => '发布状态',
             'actual_send_at' => '实际发布时间',
-            'publiced_url' => '内容发布后的地址',
+            'publiced_url' => '发布后地址',
             'reprint_num' => '转发数',
             'comment_num' => '评论数',
             'rank' => '排名',
         ];
-    }
+    }/*}}}*/
+
+    public function beforeSave($isInsert)
+    {/*{{{*/
+        if (parent::beforeSave($isInsert)) {
+            # new record
+            if ($isInsert) {
+                $this->ctime = time();
+                $this->staff_id = Yii::$app->getUser()->identity->id;
+
+                $this->expect_send_at = strtotime($this->expect_send_at);
+                $this->mtime = time();
+                $this->modified_staff_id = Yii::$app->getUser()->identity->id;
+                $this->album = implode(';', $this->album);
+                # when display: explode(';', $this->album);
+            }
+            # update record
+            else {
+                # 内容普通修改
+                if (intval($this->is_verified) <= 0) {
+                    $this->expect_send_at = strtotime($this->expect_send_at);
+                    $this->mtime = time();
+                    $this->modified_staff_id = Yii::$app->getUser()->identity->id;
+                    $this->album = implode(';', $this->album);
+                }
+                # 内容通过验证
+                else {
+                    $this->verified_at = time();
+                    $this->verified_staff_id = Yii::$app->getUser()->identity->id;
+                }
+            }
+            return true;
+        }
+        return false;
+    }/*}}}*/
+
+    public function scenarios()
+    {/*{{{*/
+        $s = parent::scenarios();
+        $s['verify'] = [
+            'is_verified', 'rate', 'remark'
+        ];
+        return $s;
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategory()
-    {
+    {/*{{{*/
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getStaff()
-    {
+    {/*{{{*/
         return $this->hasOne(Staff::className(), ['id' => 'staff_id']);
-    }
+    }/*}}}*/
 }
