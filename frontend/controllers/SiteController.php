@@ -2,7 +2,8 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\LoginForm;
+#use common\models\LoginForm;
+use common\models\StaffLogin;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -22,7 +23,7 @@ class SiteController extends Controller
      * @inheritdoc
      */
     public function behaviors()
-    {
+    {/*{{{*/
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -47,13 +48,13 @@ class SiteController extends Controller
                 ],
             ],
         ];
-    }
+    }/*}}}*/
 
     /**
      * @inheritdoc
      */
     public function actions()
-    {
+    {/*{{{*/
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -63,38 +64,36 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
-    }
+    }/*}}}*/
 
     public function actionIndex()
-    {
+    {/*{{{*/
         return $this->render('index');
-    }
+    }/*}}}*/
 
     public function actionLogin()
-    {
-        if (!\Yii::$app->user->isGuest) {
+    {/*{{{*/
+        if (!\Yii::$app->user->isGuest)
             return $this->goHome();
-        }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $model = new StaffLogin();
+        if ($model->load(Yii::$app->request->post()) && $model->login())
             return $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
-        }
-    }
+
+        return $this->render('login', [
+            'model' => $model,
+        ]);
+    }/*}}}*/
 
     public function actionLogout()
-    {
+    {/*{{{*/
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
+    }/*}}}*/
 
     public function actionContact()
-    {
+    {/*{{{*/
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
@@ -109,15 +108,15 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
-    }
+    }/*}}}*/
 
     public function actionAbout()
-    {
+    {/*{{{*/
         return $this->render('about');
-    }
+    }/*}}}*/
 
     public function actionSignup()
-    {
+    {/*{{{*/
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
@@ -130,10 +129,10 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
-    }
+    }/*}}}*/
 
     public function actionRequestPasswordReset()
-    {
+    {/*{{{*/
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
@@ -148,10 +147,10 @@ class SiteController extends Controller
         return $this->render('requestPasswordResetToken', [
             'model' => $model,
         ]);
-    }
+    }/*}}}*/
 
     public function actionResetPassword($token)
-    {
+    {/*{{{*/
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidParamException $e) {
@@ -167,5 +166,6 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
-    }
+    }/*}}}*/
+
 }

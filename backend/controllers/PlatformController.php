@@ -7,7 +7,10 @@ use backend\models\Platform;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+
 
 /**
  * PlatformController implements the CRUD actions for Platform model.
@@ -21,6 +24,16 @@ class PlatformController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'acess' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

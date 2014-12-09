@@ -17,6 +17,14 @@ return [
             'identityClass' => 'backend\models\Staff',
             'enableAutoLogin' => true,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'db' => new \yii\db\Connection([
+                'dsn' => 'mysql:host=localhost;dbname=blue',
+                'username' => 'root',
+                'password' => '',
+            ]),
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

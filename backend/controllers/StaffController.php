@@ -1,5 +1,6 @@
 <?php
 
+/*{{{namespace*/ 
 namespace backend\controllers;
 
 use Yii;
@@ -9,9 +10,14 @@ use backend\models\PasswordForm;
 
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+
+use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
+
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+/*}}}*/
 
 /**
  * StaffController implements the CRUD actions for Staff model.
@@ -25,6 +31,16 @@ class StaffController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'acess' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -57,7 +73,7 @@ class StaffController extends Controller
     {/*{{{*/
         return $this->render('view', [
             'model' => $this->findModel($id),
-        ]);
+            ]);
     }/*}}}*/
 
     /**

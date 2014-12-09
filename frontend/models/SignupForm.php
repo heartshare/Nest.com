@@ -1,7 +1,8 @@
 <?php
 namespace frontend\models;
 
-use common\models\User;
+#use common\models\User;
+use backend\models\Staff;
 use yii\base\Model;
 use Yii;
 
@@ -10,48 +11,44 @@ use Yii;
  */
 class SignupForm extends Model
 {
-    public $username;
+    public $name;
     public $email;
-    public $password;
+    public $pwd;
 
     /**
      * @inheritdoc
      */
     public function rules()
-    {
+    {/*{{{*/
         return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['name', 'filter', 'filter' => 'trim'],
+            ['name', 'required'],
+            ['name', 'unique', 'targetClass' => '\backend\models\Staff', 'message' => 'This name has already been taken.'],
+            ['name', 'string', 'min' => 2, 'max' => 255],
 
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['pwd', 'required'],
+            ['pwd', 'string', 'min' => 6],
         ];
-    }
+    }/*}}}*/
 
     /**
      * Signs user up.
      *
-     * @return User|null the saved model or null if saving fails
+     * @return Staff|null the saved model or null if saving fails
      */
     public function signup()
-    {
+    {/*{{{*/
         if ($this->validate()) {
-            $user = new User();
-            $user->username = $this->username;
-            $user->email = $this->email;
-            $user->setPassword($this->password);
-            $user->generateAuthKey();
-            $user->save();
-            return $user;
+            $staff = new Staff();
+            $staff->name = $this->name;
+            #$staff->pwd = Yii::$app->getSecurity()->generatePasswordHash($this->pwd);
+            #$staff->auth_key = Yii::$app->security->generateRandomString();
+            $staff->save();
+            dd($staff->getErrors());
+            return $staff;
         }
 
         return null;
-    }
+    }/*}}}*/
+
 }
