@@ -103,19 +103,18 @@ class StaffController extends Controller
 
     public function actionPassword($id)
     {/*{{{*/
-        $model = PasswordForm::findOne($id);
-        $message = "";
+        $model = PasswordForm::findById($id);
+        $message =false;
 
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate()) {
+            $staffModel = Staff::findOne($id);
+            $staffModel->scenario = 'password';
+            $staffModel->pwd = Yii::$app->getSecurity()->generatePasswordHash($model->new_pwd);
 
-            if ($this->comparePassword($model->old_pwd, $model->pwd)) {
-                $model->pwd = Yii::$app->getSecurity()->generatePasswordHash($model->new_pwd);
-                if ($model->save())
-                    $message = "密码修改成功";
-                else
-                    $message = "密码修改失败";
-            } else
-                $message = "原密码错误";
+            if ($staffModel->save())
+                $message = "密码修改成功";
+            else
+                $message = "密码修改失败";
         }
 
         return $this->render('password', [
@@ -151,12 +150,6 @@ class StaffController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }/*}}}*/
-
-    protected function comparePassword($pwd, $hashedPwd)
-    {/*{{{*/
-        return Yii::$app->getSecurity()
-        ->validatePassword($pwd, $hashedPwd);
     }/*}}}*/
 
     protected function generateFileName($extension)

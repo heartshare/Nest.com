@@ -29,6 +29,9 @@ function showSearchForm () {
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => [
+            'class' => 'form-inline',
+        ]
     ]); ?>
 
     <?= $form->field($model, 'category_id')->dropDownList(
@@ -36,11 +39,24 @@ function showSearchForm () {
         ['prompt' => ' -- please select -- ']
     ) ?>
 
+    <?php echo $form->field($model, 'is_verified')->dropDownList(
+        Yii::$app->params['enumData']['is_verified'],
+        ['prompt' => ' -- please select -- ']
+    ) ?>
+
+    <?php echo $form->field($model, 'is_published')->dropDownList(
+        Yii::$app->params['enumData']['is_published'],
+        ['prompt' => ' -- please select -- ']
+    ) ?>
+
+    <?php echo $form->field($model, 'is_important')->dropDownList(
+        Yii::$app->params['enumData']['is_important'],
+        ['prompt' => ' -- please select -- ']
+    ) ?>
+
     <?php #echo $form->field($model, 'staff_id') ?>
 
     <?= $form->field($model, 'title') ?>
-
-    <?= $form->field($model, 'content') ?>
 
     <?php # echo $form->field($model, 'expect_send_at') ?>
 
@@ -60,21 +76,13 @@ function showSearchForm () {
         ],
     ]) ?>
 
-    <?php // echo $form->field($model, 'is_draft') ?>
+    <?= $form->field($model, 'content') ?>
 
-    <?php echo $form->field($model, 'is_important')->dropDownList(
-        Yii::$app->params['enumData']['is_important'],
-        ['prompt' => ' -- please select -- ']
-    ) ?>
+    <?php // echo $form->field($model, 'is_draft') ?>
 
     <?php // echo $form->field($model, 'mtime') ?>
 
     <?php // echo $form->field($model, 'modified_staff_id') ?>
-
-    <?php echo $form->field($model, 'is_verified')->dropDownList(
-        Yii::$app->params['enumData']['is_verified'],
-        ['prompt' => ' -- please select -- ']
-    ) ?>
 
     <?php // echo $form->field($model, 'verified_at') ?>
 
@@ -83,11 +91,6 @@ function showSearchForm () {
     <?php // echo $form->field($model, 'verified_staff_id') ?>
 
     <?php // echo $form->field($model, 'remark') ?>
-
-    <?php echo $form->field($model, 'is_published')->dropDownList(
-        Yii::$app->params['enumData']['is_published'],
-        ['prompt' => ' -- please select -- ']
-    ) ?>
 
     <?php // echo $form->field($model, 'actual_send_at') ?>
 

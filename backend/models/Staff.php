@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "{{%staff}}".
@@ -28,8 +29,10 @@ use Yii;
  * @property Content[] $contents
  * @property Platform[] $platforms
  */
-class Staff extends \yii\db\ActiveRecord
+class Staff extends \yii\db\ActiveRecord implements IdentityInterface
 {
+
+    public $authKey;
 
     /**
      * @inheritdoc
@@ -126,6 +129,20 @@ class Staff extends \yii\db\ActiveRecord
         return Yii::$app->getSecurity()->generatePasswordHash(Yii::$app->params['userInitPassword']);
     }/*}}}*/
 
+    public static function findByName($name)
+    {/*{{{*/
+        if ( ($staff = static::find()->where(['name' => $name])->one()) != null)
+            return $staff;
+        throw new yii\web\NotFoundHttpException('请求页面不存在');
+    }/*}}}*/
+
+    public function scenarios()
+    {/*{{{*/
+        $s = parent::scenarios();
+        $s['password'] = ['pwd'];
+        return $s;
+    }/*}}}*/
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -156,6 +173,32 @@ class Staff extends \yii\db\ActiveRecord
     public function getPlatforms()
     {/*{{{*/
         return $this->hasMany(Platform::className(), ['staff_id' => 'id']);
+    }/*}}}*/
+
+
+    public static function findIdentity($id)
+    {/*{{{*/
+        return static::findOne($id);
+    }/*}}}*/
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {/*{{{*/
+        return static::findOne(['access_token' => $token]);
+    }/*}}}*/
+
+    public function getId()
+    {/*{{{*/
+        return $this->id;
+    }/*}}}*/
+
+    public function getAuthKey()
+    {/*{{{*/
+        return $this->authKey;
+    }/*}}}*/
+
+    public function validateAuthKey($authKey)
+    {/*{{{*/
+        return $this->authKey === $authKey;
     }/*}}}*/
 
 }

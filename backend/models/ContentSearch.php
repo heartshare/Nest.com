@@ -54,12 +54,13 @@ class ContentSearch extends Content
      */
     public function search($params)
     {/*{{{*/
+
         $query = Content::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query->joinWith('category'),
             'pagination' => [
-                'pageSize' => 50,
+                'pageSize' => 20,
             ],
         ]);
 
@@ -72,35 +73,19 @@ class ContentSearch extends Content
         $this->ctimeEnd= !empty($this->ctimeEnd) ? strtotime($this->ctimeEnd): time();
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'category_id' => $this->category_id,
             'staff_id' => $this->staff_id,
-            'expect_send_at' => $this->expect_send_at,
-            'ctime' => $this->ctime,
-            'is_draft' => $this->is_draft,
-            'is_important' => $this->is_important,
-            'mtime' => $this->mtime,
-            'modified_staff_id' => $this->modified_staff_id,
-            'is_verified' => $this->is_verified,
-            'verified_at' => $this->verified_at,
-            'rate' => $this->rate,
-            'verified_staff_id' => $this->verified_staff_id,
-            'is_published' => $this->is_published,
-            'actual_send_at' => $this->actual_send_at,
-            'reprint_num' => $this->reprint_num,
-            'comment_num' => $this->comment_num,
-            'rank' => $this->rank,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'is_important', $this->content])
-            ->andFilterWhere(['like', 'is_verified', $this->content])
+            ->andFilterWhere(['like', 'is_important', $this->is_important])
+            ->andFilterWhere(['like', 'is_verified', $this->is_verified])
 
             # between
             ->andFilterWhere(['between', '{{%content}}.ctime', $this->ctimeBegin, $this->ctimeEnd])
 
-            ->andFilterWhere(['like', 'is_published', $this->content]);
+            ->andFilterWhere(['like', 'is_published', $this->is_published]);
             #->andFilterWhere(['like', 'source_url', $this->source_url])
             #->andFilterWhere(['like', 'album', $this->album])
             #->andFilterWhere(['like', 'remark', $this->remark])
