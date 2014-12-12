@@ -16,7 +16,8 @@ class EditorRule extends Rule
 
     public function execute($user, $item, $params)
     {/*{{{*/
-        return isset($params['content']) ? $params['content']->createdBy == $user : false;
+        $yes = $params['content']->staff_id === $user;
+        return false;
     }/*}}}*/
 
 }

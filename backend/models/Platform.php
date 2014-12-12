@@ -22,34 +22,34 @@ class Platform extends \yii\db\ActiveRecord
      * @inheritdoc
      */
     public static function tableName()
-    {
+    {/*{{{*/
         return '{{%platform}}';
-    }
+    }/*}}}*/
 
     /**
      * @inheritdoc
      */
     public function rules()
-    {
+    {/*{{{*/
         return [
             ['name', 'required'],
             [['staff_id', 'ctime'], 'integer'],
             [['name'], 'string', 'max' => 10]
         ];
-    }
+    }/*}}}*/
 
     /**
      * @inheritdoc
      */
     public function attributeLabels()
-    {
+    {/*{{{*/
         return [
             'id' => '编号',
             'name' => '媒体名称',
             'staff_id' => '创建者编号',
             'ctime' => '创建时间',
         ];
-    }
+    }/*}}}*/
 
     public function beforeSave($isInsert)
     {/*{{{*/
@@ -69,23 +69,24 @@ class Platform extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getAccounts()
-    {
+    {/*{{{*/
         return $this->hasMany(Account::className(), ['platform_id' => 'id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategories()
-    {
+    {/*{{{*/
         return $this->hasMany(Category::className(), ['platform_id' => 'id']);
-    }
+    }/*}}}*/
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getStaff()
-    {
+    {/*{{{*/
         return $this->hasOne(Staff::className(), ['id' => 'staff_id']);
-    }
+    }/*}}}*/
+
 }

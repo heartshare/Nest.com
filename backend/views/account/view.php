@@ -26,12 +26,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'platform_id',
-            'staff_id',
+            [
+                'attribute' => 'platform_id',
+                'value' => $model->platform->name
+            ],
+            [
+                'attribute' => 'staff_id',
+                'value' => $model->staff->name
+            ],
             'name',
             'uid',
-            'avatar',
+            [
+                'attribute' => 'avatar',
+                'format' => 'html',
+                'value' => Html::img($model->avatar, ['alt' => $model->name . "'s avatar"])
+            ],
             'ctime:datetime',
         ],
     ]) ?>

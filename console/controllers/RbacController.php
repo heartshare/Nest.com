@@ -18,6 +18,36 @@ class RbacController extends Controller
     public function actionInit()
     {/*{{{*/
         $auth = $this->auth;
+
+        #############################################################################
+        # rule
+
+        # add rule
+        $rule = new \backend\rbac\EditorRule;
+        $auth->add($rule);
+
+        # add permission
+        $updateOwnContent = $auth->createPermission('updateOwnContent');
+        $updateOwnContent->description = '修改本人添加的内容';
+        $updateOwnContent->ruleName = $rule->name;
+        $auth->add($updateOwnContent);
+
+        $auth->addChild($auth->getPermission('updateContent'), $updateOwnContent);
+        $auth->addChild($auth->getRole('editor'), $updateOwnContent);
+
+    }/*}}}*/
+
+    public function getAuth()
+    {/*{{{*/
+        if (!$this->_auth)
+            $this->_auth =  Yii::$app->authManager;
+
+        return $this->_auth;
+    }/*}}}*/
+
+    public function demo2()
+    {/*{{{*/
+
         #############################################################################
         ## permission
 
@@ -170,7 +200,7 @@ class RbacController extends Controller
 
         # god
         $god = $auth->createRole('god');
-        $god->description = 'god created the world';
+        $god->description = 'god';
         $auth->add($god);
         # staff
         $auth->addChild($god, $createStaff);
@@ -213,7 +243,7 @@ class RbacController extends Controller
         $auth->addChild($god, $deleteContent);
 
         $leader = $auth->createRole('leader');
-        $leader->description = 'leader is god\'s shadow in the world';
+        $leader->description = '领导';
         $auth->add($leader);
         # staff
         $auth->addChild($leader, $createStaff);
@@ -257,13 +287,13 @@ class RbacController extends Controller
 
         # editor
         $editor = $auth->createRole('editor');
-        $editor->description = 'editor who writing and writing without end day';
+        $editor->description = '编辑人员';
         $auth->add($editor);
         $auth->addChild($editor, $createContent);
 
         # inspector
         $inspector = $auth->createRole('inspector');
-        $inspector->description = 'inspector inspect editor if get things done';
+        $inspector->description = '审核人员';
         $auth->add($inspector);
         $auth->addChild($inspector, $verifyContent);
 
@@ -275,57 +305,6 @@ class RbacController extends Controller
         $auth->assign($leader, 198);
         $auth->assign($editor, 3);
         $auth->assign($inspector, 4);
-
-    }/*}}}*/
-
-    public function getAuth()
-    {/*{{{*/
-        if (!$this->_auth)
-            $this->_auth =  Yii::$app->authManager;
-
-        return $this->_auth;
-    }/*}}}*/
-
-    public function demo()
-    {/*{{{*/
-        $auth = $this->auth;
-
-        # create Content
-        $createContent = $auth->createPermission('createContent');
-        $createContent->description = 'Create Content';
-        $auth->add($createContent);
-        # update Content
-        $updateContent = $auth->createPermission('updateContent');
-        $updateContent-> description = 'Update Content';
-        $auth->add($updateContent);
-
-        # add editor role that can create content
-        $editor = $auth->createRole('editor');
-        $auth->add($editor);
-        $auth->addChild($editor, $createContent);
-
-        # add admin role that can update content and belongs same permission of editor
-        $admin = $auth->createRole('admin');
-        $auth->add($admin);
-        $auth->addChild($admin, $updateContent);
-        $auth->addChild($admin, $editor);
-
-        # add rule
-        $rule = new \backend\rbac\EditorRule;
-        $auth->add($rule);
-
-        $updateOwnContent = $auth->createPermission('updateOwnContent');
-        $updateContent->description = 'Update Own Content';
-        $updateContent->ruleName = $rule->name;
-        $auth->add($updateOwnContent);
-
-        $auth->addChild($updateContent, $updateOwnContent);
-        $auth->addChild($editor, $updateOwnContent);
-
-        $auth->assign($editor, 198);
-        $auth->assign($admin, 1);
-
-
     }/*}}}*/
 
 }

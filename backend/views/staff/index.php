@@ -11,6 +11,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="staff-index">
 
+    <p>
+        <?= Html::a('create a new record', ['create']); ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -62,8 +66,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'glyphicon glyphicon-flash'
                         ]);
                     },
+                    'content' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-send'
+                        ]);
+                    },
                 ],
-                'template' => '{view} {update} {password} {reset} {freeze} {assign} {delete}',
+                'template' => '{view} {update} {password} {reset} {freeze} {assign} {content} {delete}',
             ],
         ],
     ]); ?>

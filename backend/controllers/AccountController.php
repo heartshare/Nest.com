@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Account;
+use backend\models\Platform;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -78,11 +79,15 @@ class AccountController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
+
+        echo "<br> <br> <br> <br>";
+        \d($model->getErrors());
+
+        return $this->render('create', [
+            'model' => $model,
+            'platform' => Platform::find()->all(),
+        ]);
     }/*}}}*/
 
     /**

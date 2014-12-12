@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
 use yii\base\Model;
+use yii\web\ForbiddenHttpException;
 
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -40,9 +41,9 @@ class ContentController extends Controller
                         'allow' => true,
                         'actions' => ['index', 'view', 'create', 'update', 'delete', 'verify'],
                         'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
-                        }
+                        #'matchCallback' => function ($rule, $action) {
+                        #    return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
+                        #}
                     ],
                 ],
             ],
@@ -131,7 +132,11 @@ class ContentController extends Controller
      */
     public function actionUpdate($id)
     {/*{{{*/
+
         $model = $this->findModel($id);
+        if (!Yii::$app->getUser()->can('updateOwnContent', ['content' => $model]))
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+
         $this->albumSplitHtml($model);
 
         if ($model->load(Yii::$app->request->post()) && $model->save())

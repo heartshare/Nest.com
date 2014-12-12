@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -12,15 +13,16 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'platform_id')->textInput() ?>
+    <?= $form->field($model, 'platform_id')->dropDownList(
+        ArrayHelper::map($platform, 'id', 'name'),
+        ['prompt' => ' -- please select --']
+    ) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'uid')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'avatar')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'ctime')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

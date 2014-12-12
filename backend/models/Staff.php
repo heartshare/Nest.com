@@ -137,6 +137,13 @@ class Staff extends \yii\db\ActiveRecord implements IdentityInterface
         throw new yii\web\NotFoundHttpException('请求页面不存在');
     }/*}}}*/
 
+    public static function findByid($id)
+    {/*{{{*/
+        if ( ($staff = static::findOne($id)) != null)
+            return $staff;
+        throw new yii\web\NotFoundHttpException('请求页面不存在');
+    }/*}}}*/
+
     public function scenarios()
     {/*{{{*/
         $s = parent::scenarios();

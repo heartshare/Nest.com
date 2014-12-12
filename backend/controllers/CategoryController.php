@@ -82,7 +82,6 @@ class CategoryController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        \d($model->getErrors());
         return $this->render('create', [
             'model' => $model,
             'platform' => Platform::find()->asArray()->all(),

@@ -12,6 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="article-index">
 
+    <p>
+        <?= Html::a('create a new record', ['create']); ?>
+    </p>
+
     <?= $this->render('_search', [
         'model' => $searchModel,
     ]);?>

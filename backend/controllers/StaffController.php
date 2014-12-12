@@ -9,6 +9,7 @@ use backend\models\Staff;
 use backend\models\PasswordForm;
 use backend\models\Category;
 use backend\models\StaffCategory;
+use backend\models\AssignForm;
 
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -186,10 +187,10 @@ class StaffController extends Controller
     }/*}}}*/
 
     /**
-        * @brief assign category to user
+        * @brief assign category and content under that category to user
         * @return page
      */
-    public function actionAssign($id)
+    public function actionContent($id)
     {/*{{{*/
         $categoryProvider = new ActiveDataProvider([
             'query' => Category::find()->joinWith('account'),
@@ -219,9 +220,21 @@ class StaffController extends Controller
             }
         }
 
-        return $this->render('assign', [
+        return $this->render('content', [
             'categoryProvider' => $categoryProvider,
             'staff' => $staff,
+        ]);
+    }/*}}}*/
+
+    public function actionAssign($id)
+    {/*{{{*/
+        $auth = Yii::$app->authmanager;
+        \d(Yii::$app->getRequest()->post());
+        return $this->render('assign', [
+            'model' => (new AssignForm),
+            'staff' => Staff::findById($id),
+            'roleArr' => $auth->getRoles(),
+            'permissionArr' => $auth->getPermissions(),
         ]);
     }/*}}}*/
 

@@ -11,6 +11,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="platform-index">
 
+    <p>
+        <?= Html::a('create a new record', ['create']); ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
