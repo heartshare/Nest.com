@@ -107,4 +107,8 @@ class Category extends \yii\db\ActiveRecord
         return $this->hasMany(Content::className(), ['category_id' => 'id']);
     }/*}}}*/
 
+    public function getContentPermission()
+    {/*{{{*/
+        return $this->hasMany(StaffCategory::className(), ['category_id' => 'id']);
+    }/*}}}*/
 }

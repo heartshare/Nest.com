@@ -34,11 +34,15 @@ class ContentController extends Controller
             ],
             'acess' => [
                 'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'verify'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'verify'],
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
+                        }
                     ],
                 ],
             ],

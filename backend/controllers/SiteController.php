@@ -19,11 +19,8 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'only' => ['index', 'logout'],
                 'rules' => [
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ],
                     [
                         'actions' => ['logout', 'index'],
                         'allow' => true,
@@ -51,6 +48,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {/*{{{*/
+        #\dd(Yii::$app->getUser()->can('updateOwnContent'));
+        #$auth = Yii::$app->authManager;
+        #\dd($auth->getAssignments( Yii::$app->getUser()->identity->id), $auth->getPermissions(), $auth->getRoles(), $auth->getRules());
         return $this->render('index');
     }/*}}}*/
 

@@ -17,7 +17,7 @@ use yii\filters\AccessControl;
 class AccountController extends Controller
 {
     public function behaviors()
-    {
+    {/*{{{*/
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -36,14 +36,14 @@ class AccountController extends Controller
                 ],
             ],
         ];
-    }
+    }/*}}}*/
 
     /**
      * Lists all Account models.
      * @return mixed
      */
     public function actionIndex()
-    {
+    {/*{{{*/
         $dataProvider = new ActiveDataProvider([
             'query' => Account::find()->select([
                 'id', 'platform_id', 'staff_id', 'name', 'uid'
@@ -53,7 +53,7 @@ class AccountController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Displays a single Account model.
@@ -61,11 +61,11 @@ class AccountController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {
+    {/*{{{*/
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
+    }/*}}}*/
 
     /**
      * Creates a new Account model.
@@ -73,7 +73,7 @@ class AccountController extends Controller
      * @return mixed
      */
     public function actionCreate()
-    {
+    {/*{{{*/
         $model = new Account();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -83,7 +83,7 @@ class AccountController extends Controller
                 'model' => $model,
             ]);
         }
-    }
+    }/*}}}*/
 
     /**
      * Updates an existing Account model.
@@ -92,7 +92,7 @@ class AccountController extends Controller
      * @return mixed
      */
     public function actionUpdate($id)
-    {
+    {/*{{{*/
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -102,7 +102,7 @@ class AccountController extends Controller
                 'model' => $model,
             ]);
         }
-    }
+    }/*}}}*/
 
     /**
      * Deletes an existing Account model.
@@ -111,11 +111,11 @@ class AccountController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    {
+    {/*{{{*/
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
+    }/*}}}*/
 
     /**
      * Finds the Account model based on its primary key value.
@@ -125,11 +125,12 @@ class AccountController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
-    {
+    {/*{{{*/
         if (($model = Account::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
+    }/*}}}*/
+
 }

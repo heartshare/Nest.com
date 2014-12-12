@@ -14,8 +14,7 @@ use yii\web\NotFoundHttpException;
  */
 class PasswordForm extends ActiveRecord
 {
-    public $id, $old_pwd, $new_pwd, $new_pwd_again;
-    private $_staff;
+    public $old_pwd, $new_pwd, $new_pwd_again;
 
     public static function tableName()
     {/*{{{*/

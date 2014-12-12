@@ -47,8 +47,23 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'glyphicon glyphicon-refresh'
                         ]);
                     },
+                    'reset' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-screenshot'
+                        ]);
+                    },
+                    'freeze' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-stop'
+                        ]);
+                    },
+                    'assign' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-flash'
+                        ]);
+                    },
                 ],
-                'template' => '{view} {update} {password} {delete}',
+                'template' => '{view} {update} {password} {reset} {freeze} {assign} {delete}',
             ],
         ],
     ]); ?>

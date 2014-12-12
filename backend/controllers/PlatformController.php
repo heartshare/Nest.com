@@ -80,7 +80,7 @@ class PlatformController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        \d($model->getErrors());
+
         return $this->render('create', [
             'model' => $model,
         ]);

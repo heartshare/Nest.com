@@ -90,6 +90,7 @@ class Staff extends \yii\db\ActiveRecord implements IdentityInterface
         ];
     }/*}}}*/
 
+    # beforeSave: after validate and before save
     public function beforeSave($isInsert)
     {/*{{{*/
         if (parent::beforeSave($isInsert)) {
@@ -101,7 +102,7 @@ class Staff extends \yii\db\ActiveRecord implements IdentityInterface
                 $this->formal_at = strtotime($this->formal_at);
             }
             # on update
-            else {
+            elseif (Yii::$app->controller->action->id === 'update') {
                 $this->formal_at = strtotime($this->formal_at);
             }
             return true;
@@ -124,7 +125,7 @@ class Staff extends \yii\db\ActiveRecord implements IdentityInterface
         @unlink( Yii::$app->params['uploadDir'] . '/' . $this->avatar);
     }/*}}}*/
 
-    protected function generateInitPassword()
+    public function generateInitPassword()
     {/*{{{*/
         return Yii::$app->getSecurity()->generatePasswordHash(Yii::$app->params['userInitPassword']);
     }/*}}}*/
@@ -140,6 +141,7 @@ class Staff extends \yii\db\ActiveRecord implements IdentityInterface
     {/*{{{*/
         $s = parent::scenarios();
         $s['password'] = ['pwd'];
+        $s['freeze'] = ['is_disabled'];
         return $s;
     }/*}}}*/
 

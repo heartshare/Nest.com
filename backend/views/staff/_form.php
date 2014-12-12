@@ -23,7 +23,9 @@ use kartik\date\DatePicker;
     <?= $form->field($model, 'formal_at')->widget(DatePicker::className(), [
         'options' => [
             # 默认三个月转正
-            'value' => date('Y-m-d', $model->formal_at ?  (is_int($model->formal_at) ?$model->formal_at : strtotime($model->formal_at)) : time() + 3 * 30 * 24 * 60 * 60)
+            'value' => $model->isNewRecord
+            ? date('Y-m-d', time() + 3 * 30 * 24 * 60 * 60) 
+            : ( empty($model->formal_at) ? '' : date('Y-m-d', $model->formal_at))
         ]
     ]) ?>
 

@@ -7,6 +7,8 @@ use Yii;
 
 use backend\models\Staff;
 use backend\models\PasswordForm;
+use backend\models\Category;
+use backend\models\StaffCategory;
 
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -24,6 +26,7 @@ use yii\filters\VerbFilter;
  */
 class StaffController extends Controller
 {
+
     public function behaviors()
     {/*{{{*/
         return [
@@ -35,11 +38,15 @@ class StaffController extends Controller
             ],
             'acess' => [
                 'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'password'],
                 'rules' => [
                     [
                         'allow' => true,
                         'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
+                        }
                     ],
                 ],
             ],
@@ -108,6 +115,7 @@ class StaffController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $this->dealSingleUploadFile($model, 'avatar');
+            #$model->formal_at = strtotime($model->formal_at);
             if ($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -117,6 +125,11 @@ class StaffController extends Controller
         ]);
     }/*}}}*/
 
+    /**
+    * @brief change staff password, need old password
+    * @param $id
+    * @return page
+     */
     public function actionPassword($id)
     {/*{{{*/
         $model = PasswordForm::findById($id);
@@ -136,6 +149,79 @@ class StaffController extends Controller
         return $this->render('password', [
             'model' => $model,
             'message' => $message,
+        ]);
+    }/*}}}*/
+
+    /**
+    * @brief reset staff password 
+    * using a specified value in Yii::$app->params['initPassword']
+    * @param $id
+    * @return page
+     */
+    public function actionReset($id)
+    {/*{{{*/
+        $model = $this->findModel($id);
+        $model->scenario = 'password';
+        $model->pwd = $model->generateInitPassword();
+        if ($model->save())
+            $this->redirect(['view', 'id' => $id]);
+        else
+            throw new \yii\web\ServerErrorHttpException($model->name . '密码重置失败');
+    }/*}}}*/
+
+    /**
+     * @brief freeze or unfreeze a staff
+     * @param $id
+     * @return page
+     */
+    public function actionFreeze($id)
+    {/*{{{*/
+        $staff = $this->findModel($id);
+        $staff->scenario = 'freeze';
+        $staff->is_disabled = ($staff->is_disabled + 1) % 2;
+        if ($staff->save())
+            $this->redirect(['index']);
+        else
+            throw new \yii\web\ServerErrorHttpException('禁用 "'. $staff->name  .'" 用户失败');
+    }/*}}}*/
+
+    /**
+        * @brief assign category to user
+        * @return page
+     */
+    public function actionAssign($id)
+    {/*{{{*/
+        $categoryProvider = new ActiveDataProvider([
+            'query' => Category::find()->joinWith('account'),
+        ]);
+        $staff = $this->findModel($id);
+
+        $post = Yii::$app->getRequest()->post();
+        if (isset($post['selection'])) {
+            $categoryArr = $post['selection'];
+            $permissionArr = $post['staff_category'];
+
+            foreach ($categoryArr as $category) {
+                $staff_id = Yii::$app->getUser()->identity->id;
+                $uniqueId           =  $staff_id . $category;
+
+                # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
+                $model              = StaffCategory::getByUniqueId($uniqueId);
+                $model->staff_id    = $staff_id;
+                $model->category_id = $category;
+                $model->unique_id   = $uniqueId;
+                $model->can_browse  = $model->can_verify = $model->can_curd = 0;
+                foreach ($permissionArr[$category] as $permission) {
+                    $model->$permission = 1;
+                }
+                if (!$model->save())
+                    \d($model->getErrors());
+            }
+        }
+
+        return $this->render('assign', [
+            'categoryProvider' => $categoryProvider,
+            'staff' => $staff,
         ]);
     }/*}}}*/
 
