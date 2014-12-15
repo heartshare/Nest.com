@@ -20,6 +20,7 @@ class m141127_105508_article extends Migration
             "is_top" => "tinyint unsigned not null comment '置顶: 0, 普通; 1, 置顶'",
             "ctime"        => "integer unsigned not null comment '创建时间'",
 
+            "is_trashed" => "tinyint unsigned not null default 0 comment '是否已软删除'",
             'top_rank' => "integer not null default 0 comment '置顶权重'",
         ], $tableOptions);
     }

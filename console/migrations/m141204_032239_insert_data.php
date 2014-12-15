@@ -11,7 +11,34 @@ class m141204_032239_insert_data extends Migration
         $this->insert('{{%staff}}', [
             'staff_id' => 0,
             'name' => 'haoliang',
-            'pwd' => 'afafdabad',
+            'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
+            'ctime' => '1417663527',
+            'is_disabled' => '0',
+            'time_kind' => '1',
+            'formal_at' => '1417663850'
+        ]);
+        $this->insert('{{%staff}}', [
+            'staff_id' => 1,
+            'name' => 'leader',
+            'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
+            'ctime' => '1417663527',
+            'is_disabled' => '0',
+            'time_kind' => '1',
+            'formal_at' => '1417663850'
+        ]);
+        $this->insert('{{%staff}}', [
+            'staff_id' => 1,
+            'name' => 'editor',
+            'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
+            'ctime' => '1417663527',
+            'is_disabled' => '0',
+            'time_kind' => '1',
+            'formal_at' => '1417663850'
+        ]);
+        $this->insert('{{%staff}}', [
+            'staff_id' => 1,
+            'name' => 'inspector',
+            'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
             'ctime' => '1417663527',
             'is_disabled' => '0',
             'time_kind' => '1',

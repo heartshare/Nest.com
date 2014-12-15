@@ -19,7 +19,7 @@ use Yii;
  *
  * @property Staff $staff
  */
-class Article extends \yii\db\ActiveRecord
+class Article extends Backend
 {
     /**
      * @inheritdoc
@@ -36,7 +36,7 @@ class Article extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             [['title', 'content', 'is_draft', 'staff_visible', 'is_top'], 'required'],
-            [['staff_id', 'is_draft', 'staff_visible', 'is_top', 'ctime', 'top_rank'], 'integer'],
+            [['is_trashed', 'staff_id', 'is_draft', 'staff_visible', 'is_top', 'ctime', 'top_rank'], 'integer'],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255]
         ];
@@ -49,7 +49,7 @@ class Article extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             'id' => '编号',
-            'staff_id' => '创建者编号',
+            'staff_id' => '创建者',
             'title' => '标题',
             'content' => '内容',
             'is_draft' => '草稿',
@@ -57,6 +57,7 @@ class Article extends \yii\db\ActiveRecord
             'is_top' => '置顶',
             'ctime' => '创建时间',
             'top_rank' => '置顶权重',
+            'is_trashed'  => '是否已软删除',
         ];
     }/*}}}*/
 

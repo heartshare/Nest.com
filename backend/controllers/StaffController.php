@@ -12,7 +12,6 @@ use backend\models\StaffCategory;
 use backend\models\AssignForm;
 
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\UploadedFile;
 
 use yii\web\NotFoundHttpException;
@@ -25,7 +24,7 @@ use yii\filters\VerbFilter;
 /**
  * StaffController implements the CRUD actions for Staff model.
  */
-class StaffController extends Controller
+class StaffController extends BackendController
 {
 
     public function behaviors()
@@ -39,14 +38,33 @@ class StaffController extends Controller
             ],
             'acess' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update', 'delete', 'password'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'assign', 'trash'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
-                        'roles' => ['@'],
+                        'actions' => ['view', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'assign', 'trash'],
+                        'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
+                                'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id'))
+                            ]);
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['editor'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            #return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                            return true;
                         }
                     ],
                 ],
@@ -64,7 +82,7 @@ class StaffController extends Controller
             'query' => Staff::find()->select([
                 'id', 'name', 'ctime', 'is_disabled', 'time_kind', 
                 'formal_at', 'real_name', 'phone'
-            ]),
+            ])->where(['is_trashed' => 0]),
         ]);
 
         return $this->render('index', [
@@ -99,8 +117,12 @@ class StaffController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $role = Yii::$app->authmanager->getRoles();
+        $role = \yii\helpers\ArrayHelper::map($role, 'name', 'description');
+
         return $this->render('create', [
             'model' => $model,
+            'role' => $role,
         ]);
     }/*}}}*/
 
@@ -187,8 +209,8 @@ class StaffController extends Controller
     }/*}}}*/
 
     /**
-        * @brief assign category and content under that category to user
-        * @return page
+     * @brief assign category and content under that category to user
+     * @return page
      */
     public function actionContent($id)
     {/*{{{*/

@@ -26,6 +26,9 @@ return [
             'can_verify' => '审核分类下所有人的内容',
             'can_curd'   => '增删改查个人内容',
         ],
+
+        'is_trashed'     => ['否', '是'],
+
         'boolean' => ['否', '是'],
     ],
     # whole website logo

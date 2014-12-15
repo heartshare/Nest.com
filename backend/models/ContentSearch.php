@@ -3,14 +3,12 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Content;
 
 /**
  * ContentSearch represents the model behind the search form about `backend\models\Content`.
  */
-class ContentSearch extends Content
+class ContentSearch extends \backend\models\Content
 {
 
     public $ctimeBegin, $ctimeEnd;
@@ -42,7 +40,7 @@ class ContentSearch extends Content
     public function scenarios()
     {/*{{{*/
         // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
+        return \yii\base\Model::scenarios();
     }/*}}}*/
 
     /**
@@ -58,7 +56,7 @@ class ContentSearch extends Content
         $query = Content::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query->joinWith('category'),
+            'query' => $query->joinWith('category')->joinWith('staff'),
             'pagination' => [
                 'pageSize' => 20,
             ],

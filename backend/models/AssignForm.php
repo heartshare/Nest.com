@@ -10,7 +10,7 @@ use yii\base\Model;
  * @Author haoliang
  * @Date 12.12.2014 18:11
  */
-class AssignForm extends Model
+class AssignForm extends \yii\base\Model
 {
     public $role, $permission;
 

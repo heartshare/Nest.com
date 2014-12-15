@@ -47,7 +47,7 @@ class StaffLogin extends Model
     public function getStaff()
     {/*{{{*/
         if (!$this->_staff)
-            $this->_staff= Staff::findByName($this->name);
+            $this->_staff= Staff::find()->where(['name' => $this->name])->one();
 
         return $this->_staff;
     }/*}}}*/

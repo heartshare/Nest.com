@@ -14,10 +14,9 @@ class EditorRule extends Rule
 {
     public $name = 'isEditor';
 
-    public function execute($user, $item, $params)
+    public function execute($staff_id, $item, $params)
     {/*{{{*/
-        $yes = $params['content']->staff_id === $user;
-        return false;
+        return $params['model']->staff_id === $staff_id;
     }/*}}}*/
 
 }

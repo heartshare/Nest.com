@@ -3,16 +3,13 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\Model;
-use yii\db\ActiveRecord;
-use yii\web\NotFoundHttpException;
 
 /**
  * PasswordForm class file.
  * @Author haoliang
  * @Date 05.12.2014 11:19
  */
-class PasswordForm extends ActiveRecord
+class PasswordForm extends \yii\db\ActiveRecord
 {
     public $old_pwd, $new_pwd, $new_pwd_again;
 
@@ -53,7 +50,7 @@ class PasswordForm extends ActiveRecord
     {/*{{{*/
         $staff = static::findOne($id);
         if (!$staff)
-            throw new NotFoundHttpException('该页面未找到');
+            throw new \yii\web\NotFoundHttpException('该页面未找到');
         return $staff;
     }/*}}}*/
 

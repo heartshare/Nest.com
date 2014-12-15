@@ -7,7 +7,6 @@ use backend\models\Content;
 use backend\models\ContentSearch;
 use backend\models\Category;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -20,9 +19,10 @@ use yii\filters\AccessControl;
 /**
  * ContentController implements the CRUD actions for Content model.
  */
-class ContentController extends Controller
+class ContentController extends BackendController
 {
     private $_category;
+    private $_model = false;
 
     public function behaviors()
     {/*{{{*/
@@ -39,11 +39,26 @@ class ContentController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'verify'],
-                        'roles' => ['@'],
-                        #'matchCallback' => function ($rule, $action) {
-                        #    return Yii::$app->getUser()->can($action->id . ucfirst(Yii::$app->controller->id));
-                        #}
+                        'actions' => ['index'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            return true;
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['editor'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['view', 'update', 'delete', 'verify', 'trash'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
+                                'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id'))
+                            ]);
+                        },
                     ],
                 ],
             ],
@@ -134,7 +149,8 @@ class ContentController extends Controller
     {/*{{{*/
 
         $model = $this->findModel($id);
-        if (!Yii::$app->getUser()->can('updateOwnContent', ['content' => $model]))
+
+        if (!Yii::$app->getUser()->can('updateOwnContent', ['model' => $model]))
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
 
         $this->albumSplitHtml($model);
@@ -170,11 +186,11 @@ class ContentController extends Controller
      */
     protected function findModel($id)
     {/*{{{*/
-        if (($model = Content::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        if ($this->_model)
+            return $this->_model;
+        if (($this->_model = Content::findOne($id)) !== null)
+            return $this->_model;
+        throw new NotFoundHttpException('The requested page does not exist.');
     }/*}}}*/
 
     # split album from string to array, add to $model->album

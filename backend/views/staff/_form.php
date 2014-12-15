@@ -14,6 +14,11 @@ use kartik\date\DatePicker;
 
     <?php $form = ActiveForm::begin([ 'options' => [ 'enctype' => 'multipart/form-data' ] ]); ?>
 
+    <?= $form->field($model, 'role')->dropDownList(
+        $role,
+        ['prompt' => ' -- please select -- ']
+    ); ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'time_kind')->radioList(

@@ -35,7 +35,7 @@ use Yii;
  * @property Category $category
  * @property Staff $staff
  */
-class Content extends \yii\db\ActiveRecord
+class Content extends Backend
 {
 
     # 存储将图片集构造为html后的字符串
@@ -50,7 +50,7 @@ class Content extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             [['category_id', 'title', 'album', 'content', 'expect_send_at', 'source_url', 'is_draft', 'is_important'], 'required'],
-            [['category_id', 'staff_id', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
+            [['is_trashed', 'category_id', 'staff_id', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
             [['title'], 'string', 'max' => 30],
             [['content', 'source_url', 'remark', 'publiced_url'], 'string', 'max' => 255],
             [['source_url', 'publiced_url'], 'url'],
@@ -64,8 +64,8 @@ class Content extends \yii\db\ActiveRecord
         return [
 
             'id' => '编号',
-            'category_id' => '分类编号',
-            'staff_id' => '创建者编号',
+            'category_id' => '分类',
+            'staff_id' => '创建者',
             'title' => '标题',
             'content' => '内容',
             'expect_send_at' => '期望发布时间',
@@ -75,12 +75,14 @@ class Content extends \yii\db\ActiveRecord
             'is_draft' => '草稿',
             'is_important' => '重要内容',
             'mtime' => '最后修改时间',
-            'modified_staff_id' => '修改者编号',
+            'modified_staff_id' => '修改者',
+
+            'is_trashed'  => '已软删除',
 
             'is_verified' => '审核状态',
             'verified_at' => '审核时间',
             'rate' => '内容评级',
-            'verified_staff_id' => '审核者编号',
+            'verified_staff_id' => '审核者',
             'remark' => '审核批注',
 
             'is_published' => '发布状态',
@@ -108,17 +110,21 @@ class Content extends \yii\db\ActiveRecord
             }
             # update record
             else {
-                # 内容普通修改
-                if (intval($this->is_verified) <= 0) {
+                switch (Yii::$app->controller->action->id) {
+                    # 内容普通修改
+                case 'update':
                     $this->expect_send_at = strtotime($this->expect_send_at);
                     $this->mtime = time();
                     $this->modified_staff_id = Yii::$app->getUser()->identity->id;
                     $this->album = implode(';', $this->album);
-                }
-                # 内容通过验证
-                else {
+                    break;
+                    # 内容通过验证
+                case 'verify':
                     $this->verified_at = time();
                     $this->verified_staff_id = Yii::$app->getUser()->identity->id;
+                    break;
+                default:
+                    break;
                 }
             }
             return true;

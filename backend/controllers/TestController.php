@@ -3,7 +3,6 @@
 namespace backend\controllers;
 
 use Yii;
-use yii\web\Controller;
 use Faker\Factory;
 
 use backend\models\Staff;
@@ -13,7 +12,7 @@ use backend\models\Staff;
  * @Author haoliang
  * @Date 08.12.2014 16:10
  */
-class TestController extends Controller
+class TestController extends BackendController
 {
     private $_faker;
 

@@ -16,7 +16,7 @@ use Yii;
  * @property Category[] $categories
  * @property Staff $staff
  */
-class Platform extends \yii\db\ActiveRecord
+class Platform extends Backend
 {
     /**
      * @inheritdoc
@@ -33,7 +33,7 @@ class Platform extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             ['name', 'required'],
-            [['staff_id', 'ctime'], 'integer'],
+            [['is_trashed', 'staff_id', 'ctime'], 'integer'],
             [['name'], 'string', 'max' => 10]
         ];
     }/*}}}*/
@@ -46,8 +46,9 @@ class Platform extends \yii\db\ActiveRecord
         return [
             'id' => '编号',
             'name' => '媒体名称',
-            'staff_id' => '创建者编号',
+            'staff_id' => '创建者',
             'ctime' => '创建时间',
+            'is_trashed'  => '是否已软删除',
         ];
     }/*}}}*/
 

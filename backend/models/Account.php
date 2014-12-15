@@ -18,7 +18,7 @@ use Yii;
  * @property Platform $platform
  * @property Category[] $categories
  */
-class Account extends \yii\db\ActiveRecord
+class Account extends Backend
 {
     /**
      * @inheritdoc
@@ -35,7 +35,7 @@ class Account extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             [['platform_id', 'name', 'uid', 'avatar'], 'required'],
-            [['platform_id', 'staff_id', 'ctime'], 'integer'],
+            [['is_trashed', 'platform_id', 'staff_id', 'ctime'], 'integer'],
             [['name', 'uid'], 'string', 'max' => 20],
             [['avatar'], 'string', 'max' => 255],
             ['avatar', 'url'],
@@ -48,13 +48,14 @@ class Account extends \yii\db\ActiveRecord
     public function attributeLabels()
     {/*{{{*/
         return [
-            'id' => '编号',
-            'platform_id' => '媒体平台编号',
-            'staff_id' => '创建者编号',
-            'name' => '账户名称',
-            'uid' => 'uid',
-            'avatar' => '头像',
-            'ctime' => '创建时间',
+            'id'          => '编号',
+            'platform_id' => '媒体平台',
+            'staff_id'    => '创建者',
+            'name'        => '账户名称',
+            'uid'         => 'uid',
+            'avatar'      => '头像',
+            'ctime'       => '创建时间',
+            'is_trashed'  => '是否已软删除',
         ];
     }/*}}}*/
 

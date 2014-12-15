@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -48,33 +49,73 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     'password' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-refresh'
+                            'class' => 'glyphicon glyphicon-refresh',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '修改密码',
                         ]);
                     },
                     'reset' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-screenshot'
+                            'class' => 'glyphicon glyphicon-screenshot',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '重置密码',
                         ]);
                     },
                     'freeze' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-stop'
+                            'class' => 'glyphicon glyphicon-stop',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '冻结',
                         ]);
                     },
                     'assign' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-flash'
+                            'class' => 'glyphicon glyphicon-flash',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '分配权限',
                         ]);
                     },
                     'content' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-send'
+                            'class' => 'glyphicon glyphicon-send',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '分配分类',
+                        ]);
+                    },
+                    'trash' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-trash',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '删除',
+                        ]);
+                    },
+                    'delete' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-fire',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '销毁',
+                            'data-confirm' => 'Are you sure you want to delete this item?',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
                         ]);
                     },
                 ],
-                'template' => '{view} {update} {password} {reset} {freeze} {assign} {content} {delete}',
+                'template' => '{view} {update} {password} {reset} {freeze} {assign} {content} {trash} {delete} ',
             ],
         ],
     ]); ?>
+
+<?php
+$this->registerJs(
+    " $('[data-toggle=\"tooltip\"]').tooltip(); ",
+    View::POS_READY);
+?>
 
 </div>

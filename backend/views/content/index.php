@@ -27,13 +27,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            'id',
             [
                 'attribute' => 'category_id',
                 'value' => function ($model) {
                     return $model->category->name;
                 }
             ],
-            #'staff_id',
+            [
+                'attribute' => 'staff_id',
+                'value' => function ($model) {
+                    return $model->staff->name;
+                }
+            ],
             'title',
             'content:html',
             'expect_send_at:datetime',
@@ -65,6 +71,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->params['enumData']['is_published'][$model->is_published];
                 }
             ],
+            [
+                'attribute' => 'is_trashed',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_trashed'][$model->is_trashed];
+                }
+            ],
             // 'actual_send_at',
             // 'publiced_url:url',
             // 'reprint_num',
@@ -79,8 +91,22 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'glyphicon glyphicon-screenshot'
                         ]);
                     },
+                    'trash' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-trash'
+                        ]);
+                    },
+                    'delete' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-fire',
+                            'title' => 'Delete',
+                            'data-confirm' => 'Are you sure you want to delete this item?',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    },
                 ],
-                'template' => '{view} {update} {verify} {delete}',
+                'template' => '{view} {update} {verify} {trash} {delete}',
             ],
         ],
     ]); ?>

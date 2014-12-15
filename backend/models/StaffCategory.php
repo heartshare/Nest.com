@@ -44,18 +44,12 @@ class StaffCategory extends \yii\db\ActiveRecord
     public function attributeLabels()
     {/*{{{*/
         return [
-            'staff_id' => '员工编号',
-            'category_id' => '分类编号',
+            'staff_id' => '员工',
+            'category_id' => '分类',
             'can_browse' => '查看分类下所有人的内容',
             'can_verify' => '审核分类下所有人的内容',
             'can_curd' => '增删改查分类下个人的内容',
         ];
-    }/*}}}*/
-
-    public function scenarios()
-    {/*{{{*/
-        $s = parent::scenarios();
-        return $s;
     }/*}}}*/
 
     /**

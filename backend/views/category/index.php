@@ -21,13 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => '媒体平台',
+                'attribute' => 'platform_id',
                 'value' => function ($model) {
                     return $model->platform->name;
                 }
             ],
             [
-                'attribute' => '媒体帐号',
+                'attribute' => 'account_id',
                 'value' => function ($model) {
                     return $model->account->name;
                 }
@@ -37,7 +37,26 @@ $this->params['breadcrumbs'][] = $this->title;
             'summary',
             'ctime:datetime',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                    'trash' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-trash'
+                        ]);
+                    },
+                    'delete' => function ($url, $model, $key) {
+                        return Html::a('', $url, [
+                            'class' => 'glyphicon glyphicon-fire',
+                            'title' => 'Delete',
+                            'data-confirm' => 'Are you sure you want to delete this item?',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                ],
+                'template' => ' {view} {update} {trash} {delete}',
+            ],
         ],
     ]); ?>
 

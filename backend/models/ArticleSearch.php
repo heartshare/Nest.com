@@ -3,7 +3,6 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
@@ -24,7 +23,7 @@ class ArticleSearch extends Article
     public function scenarios()
     {/*{{{*/
         # 使用 yii\base\Model 的 scenarios
-        return Model::scenarios();
+        return \yii\base\Model::scenarios();
     }/*}}}*/
 
     public function search($params)

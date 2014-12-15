@@ -20,7 +20,7 @@ use Yii;
  * @property Staff $staff
  * @property Content[] $contents
  */
-class Category extends \yii\db\ActiveRecord
+class Category extends Backend
 {
     /**
      * @inheritdoc
@@ -37,7 +37,7 @@ class Category extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             [['account_id', 'name', 'summary'], 'required'],
-            [['platform_id', 'account_id', 'staff_id', 'ctime'], 'integer'],
+            [['is_trashed', 'platform_id', 'account_id', 'staff_id', 'ctime'], 'integer'],
             [['name'], 'string', 'max' => 10],
             [['summary'], 'string', 'max' => 255]
         ];
@@ -50,12 +50,13 @@ class Category extends \yii\db\ActiveRecord
     {/*{{{*/
         return [
             'id' => '编号',
-            'platform_id' => '媒体平台编号',
-            'account_id' => '媒体账户编号',
-            'staff_id' => '创建者编号',
+            'platform_id' => '媒体平台',
+            'account_id' => '媒体账户',
+            'staff_id' => '创建者',
             'name' => '分类名称',
             'summary' => '分类描述',
             'ctime' => '创建时间',
+            'is_trashed'  => '是否已软删除',
         ];
     }/*}}}*/
 

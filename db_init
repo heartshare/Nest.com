@@ -1,0 +1,6 @@
+#!/bin/bash
+mysql -u haoliang -e 'drop database if exists blue; create database blue default character set utf8';
+./yii migrate
+./yii migrate --migrationPath=@yii/rbac/migrations
+./yii rbac/init
+

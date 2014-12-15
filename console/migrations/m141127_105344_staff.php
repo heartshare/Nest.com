@@ -21,6 +21,8 @@ class m141127_105344_staff extends Migration
             "formal_at"   => "integer unsigned not null default '0' comment '转正时间'",
             "auth_key"    => "string not null comment '登录验证值'",
 
+            "is_trashed" => "tinyint unsigned not null default 0 comment '是否已软删除'",
+
             "remark"      => "string(512) not null default '' comment '备注'",
 
             "real_name"   => "string(10) not null default '' comment '真实姓名'",

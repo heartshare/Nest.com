@@ -4,14 +4,12 @@ namespace console\controllers;
 
 use Yii;
 
-use yii\console\Controller;
-
 /**
  * RbacController class file.
  * @Author haoliang
  * @Date 10.12.2014 17:18
  */
-class RbacController extends Controller
+class RbacController extends \yii\console\Controller
 {
     private $_auth;
 
@@ -19,34 +17,8 @@ class RbacController extends Controller
     {/*{{{*/
         $auth = $this->auth;
 
-        #############################################################################
-        # rule
-
-        # add rule
-        $rule = new \backend\rbac\EditorRule;
-        $auth->add($rule);
-
-        # add permission
-        $updateOwnContent = $auth->createPermission('updateOwnContent');
-        $updateOwnContent->description = '修改本人添加的内容';
-        $updateOwnContent->ruleName = $rule->name;
-        $auth->add($updateOwnContent);
-
-        $auth->addChild($auth->getPermission('updateContent'), $updateOwnContent);
-        $auth->addChild($auth->getRole('editor'), $updateOwnContent);
-
-    }/*}}}*/
-
-    public function getAuth()
-    {/*{{{*/
-        if (!$this->_auth)
-            $this->_auth =  Yii::$app->authManager;
-
-        return $this->_auth;
-    }/*}}}*/
-
-    public function demo2()
-    {/*{{{*/
+        $auth->removeAll();
+        echo "old rbac data had been deleted \n";
 
         #############################################################################
         ## permission
@@ -76,10 +48,26 @@ class RbacController extends Controller
         $deleteStaff = $auth->createPermission('deleteStaff');
         $deleteStaff->description = 'delete staff';
         $auth->add($deleteStaff);
+        # trash
+        $trashStaff = $auth->createPermission('trashStaff');
+        $trashStaff->description = 'trash staff';
+        $auth->add($trashStaff);
         # password
         $passwordStaff = $auth->createPermission('passwordStaff');
         $passwordStaff->description = 'password staff';
         $auth->add($passwordStaff);
+        # assign
+        $assignStaff = $auth->createPermission('assignStaff');
+        $assignStaff->description = 'assign staff';
+        $auth->add($assignStaff);
+        # content
+        $contentStaff = $auth->createPermission('contentStaff');
+        $contentStaff->description = 'content staff';
+        $auth->add($contentStaff);
+        # reset
+        $resetStaff = $auth->createPermission('resetStaff');
+        $resetStaff->description = 'reset staff';
+        $auth->add($resetStaff);
 
         # 文章
         # create
@@ -102,6 +90,10 @@ class RbacController extends Controller
         $deleteArticle = $auth->createPermission('deleteArticle');
         $deleteArticle->description = 'delete staff';
         $auth->add($deleteArticle);
+        # trash
+        $trashArticle = $auth->createPermission('trashArticle');
+        $trashArticle->description = 'trash staff';
+        $auth->add($trashArticle);
 
         # 平台
         # create
@@ -124,6 +116,10 @@ class RbacController extends Controller
         $deletePlatform = $auth->createPermission('deletePlatform');
         $deletePlatform->description = 'delete staff';
         $auth->add($deletePlatform);
+        # trash
+        $trashPlatform = $auth->createPermission('trashPlatform');
+        $trashPlatform->description = 'trash staff';
+        $auth->add($trashPlatform);
 
         # 分类
         # create
@@ -146,6 +142,10 @@ class RbacController extends Controller
         $deleteCategory = $auth->createPermission('deleteCategory');
         $deleteCategory->description = 'delete staff';
         $auth->add($deleteCategory);
+        # trash
+        $trashCategory = $auth->createPermission('trashCategory');
+        $trashCategory->description = 'trash staff';
+        $auth->add($trashCategory);
 
         # 账户
         # create
@@ -168,6 +168,10 @@ class RbacController extends Controller
         $deleteAccount = $auth->createPermission('deleteAccount');
         $deleteAccount->description = 'delete staff';
         $auth->add($deleteAccount);
+        # trash
+        $trashAccount = $auth->createPermission('trashAccount');
+        $trashAccount->description = 'trash staff';
+        $auth->add($trashAccount);
 
         # 内容
         # create
@@ -194,6 +198,12 @@ class RbacController extends Controller
         $deleteContent = $auth->createPermission('deleteContent');
         $deleteContent->description = 'delete staff';
         $auth->add($deleteContent);
+        # trash
+        $trashContent = $auth->createPermission('trashContent');
+        $trashContent->description = 'trash staff';
+        $auth->add($trashContent);
+
+        echo "create permission {staff, content, account, article, category, platform} \n";
 
         #############################################################################
         ## role
@@ -209,31 +219,39 @@ class RbacController extends Controller
         $auth->addChild($god, $viewStaff);
         $auth->addChild($god, $freezeStaff);
         $auth->addChild($god, $deleteStaff);
+        $auth->addChild($god, $trashStaff);
         $auth->addChild($god, $passwordStaff);
+        $auth->addChild($god, $assignStaff);
+        $auth->addChild($god, $contentStaff);
+        $auth->addChild($god, $resetStaff);
         # article
         $auth->addChild($god, $createArticle);
         $auth->addChild($god, $updateArticle);
         $auth->addChild($god, $indexArticle);
         $auth->addChild($god, $viewArticle);
         $auth->addChild($god, $deleteArticle);
+        $auth->addChild($god, $trashArticle);
         # platform
         $auth->addChild($god, $createPlatform);
         $auth->addChild($god, $updatePlatform);
         $auth->addChild($god, $indexPlatform);
         $auth->addChild($god, $viewPlatform);
         $auth->addChild($god, $deletePlatform);
+        $auth->addChild($god, $trashPlatform);
         # category
         $auth->addChild($god, $createCategory);
         $auth->addChild($god, $updateCategory);
         $auth->addChild($god, $indexCategory);
         $auth->addChild($god, $viewCategory);
         $auth->addChild($god, $deleteCategory);
+        $auth->addChild($god, $trashCategory);
         # account
         $auth->addChild($god, $createAccount);
         $auth->addChild($god, $updateAccount);
         $auth->addChild($god, $indexAccount);
         $auth->addChild($god, $viewAccount);
         $auth->addChild($god, $deleteAccount);
+        $auth->addChild($god, $trashAccount);
         # content
         $auth->addChild($god, $createContent);
         $auth->addChild($god, $updateContent);
@@ -241,7 +259,9 @@ class RbacController extends Controller
         $auth->addChild($god, $viewContent);
         $auth->addChild($god, $verifyContent);
         $auth->addChild($god, $deleteContent);
+        $auth->addChild($god, $trashContent);
 
+        # leader
         $leader = $auth->createRole('leader');
         $leader->description = '领导';
         $auth->add($leader);
@@ -251,39 +271,40 @@ class RbacController extends Controller
         $auth->addChild($leader, $indexStaff);
         $auth->addChild($leader, $viewStaff);
         $auth->addChild($leader, $freezeStaff);
-        $auth->addChild($leader, $deleteStaff);
+        $auth->addChild($leader, $trashStaff);
         $auth->addChild($leader, $passwordStaff);
+        $auth->addChild($leader, $assignStaff);
         # article
         $auth->addChild($leader, $createArticle);
         $auth->addChild($leader, $updateArticle);
         $auth->addChild($leader, $indexArticle);
         $auth->addChild($leader, $viewArticle);
-        $auth->addChild($leader, $deleteArticle);
+        $auth->addChild($leader, $trashArticle);
         # platform
         $auth->addChild($leader, $createPlatform);
         $auth->addChild($leader, $updatePlatform);
         $auth->addChild($leader, $indexPlatform);
         $auth->addChild($leader, $viewPlatform);
-        $auth->addChild($leader, $deletePlatform);
+        $auth->addChild($leader, $trashPlatform);
         # category
         $auth->addChild($leader, $createCategory);
         $auth->addChild($leader, $updateCategory);
         $auth->addChild($leader, $indexCategory);
         $auth->addChild($leader, $viewCategory);
-        $auth->addChild($leader, $deleteCategory);
+        $auth->addChild($leader, $trashCategory);
         # account
         $auth->addChild($leader, $createAccount);
         $auth->addChild($leader, $updateAccount);
         $auth->addChild($leader, $indexAccount);
         $auth->addChild($leader, $viewAccount);
-        $auth->addChild($leader, $deleteAccount);
+        $auth->addChild($leader, $trashAccount);
         # content
         $auth->addChild($leader, $createContent);
         $auth->addChild($leader, $updateContent);
         $auth->addChild($leader, $indexContent);
         $auth->addChild($leader, $viewContent);
         $auth->addChild($leader, $verifyContent);
-        $auth->addChild($leader, $deleteContent);
+        $auth->addChild($leader, $trashContent);
 
         # editor
         $editor = $auth->createRole('editor');
@@ -296,15 +317,82 @@ class RbacController extends Controller
         $inspector->description = '审核人员';
         $auth->add($inspector);
         $auth->addChild($inspector, $verifyContent);
+        $auth->addChild($inspector, $indexContent);
+        $auth->addChild($inspector, $viewContent);
 
+        ## grade level
+        #         god
+        #        leader
+        #   editor  inspector
         $auth->addChild($god, $leader);
         $auth->addChild($leader, $editor);
         $auth->addChild($leader, $inspector);
 
-        $auth->assign($god, 1);
-        $auth->assign($leader, 198);
-        $auth->assign($editor, 3);
-        $auth->assign($inspector, 4);
+        echo "create four role {god, leader, editor, inspector} \n";
+
+        #############################################################################
+        # rule
+
+        # add rule
+        $rule = new \backend\rbac\OwnerRule;
+        $auth->add($rule);
+
+        # content.update
+        $updateOwnContent = $auth->createPermission('updateOwnContent');
+        $updateOwnContent->description = '修改本人添加的内容';
+        $updateOwnContent->ruleName = $rule->name;
+        $auth->add($updateOwnContent);
+        # content.delete
+        $deleteOwnContent = $auth->createPermission('deleteOwnContent');
+        $deleteOwnContent->description = '删除本人添加的内容';
+        $deleteOwnContent->ruleName = $rule->name;
+        $auth->add($deleteOwnContent);
+        # content.trash
+        $trashOwnContent = $auth->createPermission('trashOwnContent');
+        $trashOwnContent->description = '软删除本人添加的内容';
+        $trashOwnContent->ruleName = $rule->name;
+        $auth->add($trashOwnContent);
+        # content.index
+        $indexOwnContent = $auth->createPermission('indexOwnContent');
+        $indexOwnContent->description = '查看本人添加的内容列表';
+        $indexOwnContent->ruleName = $rule->name;
+        $auth->add($indexOwnContent);
+        # content.view
+        $viewOwnContent = $auth->createPermission('viewOwnContent');
+        $viewOwnContent->description = '查看本人添加的内容的详情';
+        $viewOwnContent->ruleName = $rule->name;
+        $auth->add($viewOwnContent);
+
+        $auth->addChild($updateOwnContent, $auth->getPermission('updateContent'));
+        $auth->addChild($deleteOwnContent, $auth->getPermission('deleteContent'));
+        $auth->addChild($trashOwnContent, $auth->getPermission('trashContent'));
+        $auth->addChild($indexOwnContent, $auth->getPermission('indexContent'));
+        $auth->addChild($viewOwnContent, $auth->getPermission('viewContent'));
+        $auth->addChild($auth->getRole('editor'), $updateOwnContent);
+        $auth->addChild($auth->getRole('editor'), $trashOwnContent);
+        $auth->addChild($auth->getRole('editor'), $indexOwnContent);
+        $auth->addChild($auth->getRole('editor'), $viewOwnContent);
+
+        echo "create additional rule {index, view, udpate, freeze, trash, delete} \n";
+
+        #############################################################################
+        # assign
+
+        $auth->assign($god, 1);       # haoliang
+        $auth->assign($leader, 2);  # languo
+        $auth->assign($editor, 3);    # lily
+        $auth->assign($inspector, 4); # brandon
+
+        echo "assign user to role \n";
+
+    }/*}}}*/
+
+    public function getAuth()
+    {/*{{{*/
+        if (!$this->_auth)
+            $this->_auth =  Yii::$app->authManager;
+
+        return $this->_auth;
     }/*}}}*/
 
 }

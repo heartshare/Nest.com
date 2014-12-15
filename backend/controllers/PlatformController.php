@@ -5,7 +5,6 @@ namespace backend\controllers;
 use Yii;
 use backend\models\Platform;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 use yii\filters\VerbFilter;
@@ -15,7 +14,7 @@ use yii\filters\AccessControl;
 /**
  * PlatformController implements the CRUD actions for Platform model.
  */
-class PlatformController extends Controller
+class PlatformController extends BackendController
 {
     public function behaviors()
     {/*{{{*/
@@ -28,11 +27,34 @@ class PlatformController extends Controller
             ],
             'acess' => [
                 'class' => AccessControl::className(),
+                    'only' => ['index', 'view', 'create', 'update', 'trash', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
-                        'roles' => ['@'],
+                        'actions' => ['view', 'update', 'delete'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
+                                'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id'))
+                            ]);
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['editor'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            #return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                            return true;
+                        }
                     ],
                 ],
             ],
