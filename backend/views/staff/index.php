@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,33 +14,33 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('create a new record', ['create']); ?>
     </p>
 
-    <?= GridView::widget([
+    <?= \yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'ctime:datetime',
-            [
-                'attribute' => 'is_disabled',
-                'value' => function ($model) {
-                    return Yii::$app->params['enumData']['is_disabled'][$model->is_disabled];
-                }
-            ],
+            #'formal_at:datetime',
+            // 'remark',
+            'real_name',
+            // 'qq',
+            // 'avatar',
+            'phone',
+            'alipay',
+            // 'summary',
             [
                 'attribute' => 'time_kind',
                 'value' => function ($model) {
                     return Yii::$app->params['enumData']['time_kind'][$model->time_kind];
                 }
             ],
-            'formal_at:datetime',
-            // 'remark',
-            'real_name',
-            // 'qq',
-            // 'avatar',
-            'phone',
-            // 'alipay',
-            // 'summary',
+            [
+                'attribute' => 'is_disabled',
+                'value' => function ($model) {
+                    return Yii::$app->params['enumData']['is_disabled'][$model->is_disabled];
+                }
+            ],
+            'ctime:datetime',
 
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -76,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'glyphicon glyphicon-flash',
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
-                            'title' => '分配权限',
+                            'title' => '分配角色',
                         ]);
                     },
                     'content' => function ($url, $model, $key) {
@@ -93,6 +91,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => '删除',
+                            'data-confirm' => '确定删除这条记录?',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
                         ]);
                     },
                     'delete' => function ($url, $model, $key) {
@@ -101,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => '销毁',
-                            'data-confirm' => 'Are you sure you want to delete this item?',
+                            'data-confirm' => '确定销毁这条记录?',
                             'data-method' => 'post',
                             'data-pjax' => '0',
                         ]);
@@ -112,10 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+</div>
+
 <?php
-$this->registerJs(
-    " $('[data-toggle=\"tooltip\"]').tooltip(); ",
-    View::POS_READY);
+    $this->registerJs("
+        $('[data-toggle=\"tooltip\"]').tooltip(); 
+    ", \yii\web\View::POS_READY);
 ?>
 
-</div>

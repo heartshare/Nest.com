@@ -11,7 +11,11 @@ use yii\data\ActiveDataProvider;
 class ContentSearch extends \backend\models\Content
 {
 
+    # 起止时间
     public $ctimeBegin, $ctimeEnd;
+
+    # 保存查询语句中的 where 条件
+    public $where = [];
 
     /**
      * @inheritdoc
@@ -45,9 +49,7 @@ class ContentSearch extends \backend\models\Content
 
     /**
      * Creates data provider instance with search query applied
-     *
      * @param array $params
-     *
      * @return ActiveDataProvider
      */
     public function search($params)
@@ -56,7 +58,7 @@ class ContentSearch extends \backend\models\Content
         $query = Content::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query->joinWith('category')->joinWith('staff'),
+            'query' => $query->where($this->where)->joinWith('category')->joinWith('staff'),
             'pagination' => [
                 'pageSize' => 20,
             ],

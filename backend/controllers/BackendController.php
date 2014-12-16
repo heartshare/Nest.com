@@ -9,12 +9,14 @@ use Yii;
  * @Author haoliang
  * @Date 15.12.2014 16:44
  */
-class BackendController extends \yii\web\Controller
+abstract class BackendController extends \yii\web\Controller
 {
+    private $_model = false;
+
     /**
-        * @brief trash but not delete a record
-        * @param $id
-        * @return page
+      * @brief trash but not delete a record
+      * @param $id
+      * @return page
      */
     public function actionTrash($id)
     {/*{{{*/

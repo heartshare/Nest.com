@@ -34,6 +34,7 @@ class StaffController extends BackendController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                    'trash' => ['post'],
                 ],
             ],
             'acess' => [
@@ -63,8 +64,7 @@ class StaffController extends BackendController
                         'actions' => ['index'],
                         'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
-                            #return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
-                            return true;
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
                         }
                     ],
                 ],
@@ -81,7 +81,7 @@ class StaffController extends BackendController
         $dataProvider = new ActiveDataProvider([
             'query' => Staff::find()->select([
                 'id', 'name', 'ctime', 'is_disabled', 'time_kind', 
-                'formal_at', 'real_name', 'phone'
+                'formal_at', 'real_name', 'phone', 'alipay'
             ])->where(['is_trashed' => 0]),
         ]);
 
@@ -225,7 +225,7 @@ class StaffController extends BackendController
             $permissionArr = $post['staff_category'];
 
             foreach ($categoryArr as $category) {
-                $staff_id = Yii::$app->getUser()->identity->id;
+                $staff_id = $staff->id;
                 $uniqueId           =  $staff_id . $category;
 
                 # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
@@ -248,6 +248,11 @@ class StaffController extends BackendController
         ]);
     }/*}}}*/
 
+    /**
+    * @brief 分配角色
+    * @param $id
+    * @return page
+    */
     public function actionAssign($id)
     {/*{{{*/
         $auth = Yii::$app->authmanager;

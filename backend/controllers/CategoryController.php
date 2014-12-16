@@ -29,13 +29,36 @@ class CategoryController extends BackendController
             ],
             'acess' => [
                 'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'update', 'create', 'delete', 'trash'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'password'],
-                        'roles' => ['@'],
+                        'actions' => ['view', 'update', 'delete', 'trash'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
+                                'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id'))
+                            ]);
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['editor'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['editor', 'inspector'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
+                        }
                     ],
                 ],
+
             ],
         ];
     }/*}}}*/

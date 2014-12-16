@@ -59,23 +59,25 @@ use kartik\datetime\DateTimePicker;
 
     <?php ActiveForm::end(); ?>
 
-    <script>
-    window.onload = function () {
-        clickTimes = 0;
-        startNum = 2;
-        document.getElementById('add4').onclick = function () {
-            if (clickTimes >= 2) {
-                alert('最多可添加9张');
-                return false;
-            }
-            for (i = startNum; i < startNum + 4; i ++) {
-                document.getElementById('albumDiv' +  i ).style.display = 'block';
-            }
-            startNum += 4;
-            clickTimes ++;
-        };
-    };
-    </script>
+    <?php
+        $this->registerJs("
 
+            clickTimes = 0;
+            startNum = 2;
+
+            $('#add4').click(function () {
+                if (clickTimes >= 2) {
+                    alert('最多可添加9张');
+                    return false;
+                }
+                for (i = startNum; i < startNum + 4; i ++) {
+                    $('#albumDiv' +  i ).css('display', 'block');
+                }
+                startNum += 4;
+                clickTimes ++;
+            });
+
+        ", \yii\web\View::POS_READY);
+    ?>
 
 </div>

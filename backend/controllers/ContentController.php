@@ -41,9 +41,6 @@ class ContentController extends BackendController
                         'allow' => true,
                         'actions' => ['index'],
                         'roles' => ['editor', 'inspector'],
-                        'matchCallback' => function ($rule, $action) {
-                            return true;
-                        }
                     ],
                     [
                         'allow' => true,
@@ -73,11 +70,9 @@ class ContentController extends BackendController
     {/*{{{*/
 
         $searchModel = new ContentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel->where = $this->getWhere();
 
-        #$dataProvider = new ActiveDataProvider([
-        #    'query' => Content::find(),
-        #]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -120,6 +115,11 @@ class ContentController extends BackendController
         ]);
     }/*}}}*/
 
+    /**
+      * @brief verify content: pass or no pass
+      * @param $id
+      * @return page
+     */
     public function actionVerify($id)
     {/*{{{*/
 
@@ -213,6 +213,55 @@ class ContentController extends BackendController
             $this->_category = Category::find()->asArray()->all();
         }
         return $this->_category;
+    }/*}}}*/
+
+    /**
+      * @brief  构建 index 方法搜索之前的 where 过滤语句
+      * @return array
+     */
+    protected function getWhere()
+    {/*{{{*/
+
+        $where = [];
+
+        $staff_id = Yii::$app->getUser()->identity->id;
+
+        $role = Yii::$app->authmanager->getRolesByUser($staff_id);
+
+        # 确保领导的上级地位, 显示所有记录
+        if (! isset($role['god']) && ! isset($role['leader'])) {
+            # 当前用户可以浏览[can_browse]的分类
+            $staffCategory = \backend\models\StaffCategory::find()->where([
+                'staff_id' => $staff_id,
+                'can_browse' => 1,
+            ])->asArray()->all();
+
+            $staffCategory  = array_column($staffCategory, 'category_id');
+
+            $tableName = Content::tableName();
+
+            $where = [
+                'and',
+                # 未被软删除
+                $tableName. '.is_trashed = 0',
+                [
+                    'or',
+                    # 创建者 等同于 拥有分类的 can_curd 权限
+                    $tableName. '.staff_id = '. $staff_id,
+                    # 拥有所属分类查看权 can_browse, 但不能查看草稿
+                    $staffCategory 
+                    ? [
+                        'and',
+                        $tableName. '.category_id in ('. implode(', ', $staffCategory). ') ',
+                        # 不是草稿
+                        $tableName. '.is_draft = 0', 
+                    ]
+                    : [],
+                ]
+            ];
+        }
+
+        return $where;
     }/*}}}*/
 
 }

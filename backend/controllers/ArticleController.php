@@ -55,8 +55,7 @@ class ArticleController extends BackendController
                         'actions' => ['index'],
                         'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
-                            #return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
-                            return true;
+                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id));
                         }
                     ],
                 ],

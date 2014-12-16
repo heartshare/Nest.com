@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
 
                     # 根据用户编号/分类编号确定并获取 表staff_category中唯一的一条记录
-                    $staffCategoryModel = StaffCategory::getByUniqueId(Yii::$app->getUser()->identity->id . $model->id);
+                    $staffCategoryModel = StaffCategory::getByUniqueId(Yii::$app->getRequest()->get('id').$model->id);
                     $permissionArr = Yii::$app->params['enumData']['staff_category'];
                     $selected = [];
                     foreach (array_keys($permissionArr) as $p) {

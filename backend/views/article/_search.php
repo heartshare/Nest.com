@@ -5,20 +5,26 @@ use yii\helpers\Html;
 
 ?>
 
-<a href="javascript:void(0)" onclick="showSearchForm()" id="searchBtn">显示/隐藏搜索项</a>
-<script>
-var ShowOrHide = {};
-ShowOrHide['0'] = 'none';
-ShowOrHide['1'] = 'block';
-clickTimes = 1;
+<a href="javascript:void(0)" id="searchBtn">显示/隐藏搜索项</a>
 
-function showSearchForm () {
-    $('#searchForm').css('display', ShowOrHide[clickTimes % 2]);
-    clickTimes ++;
-}
-</script>
 
-<div class="content-search" style="display:none" id="searchForm">
+<?php
+    $this->registerJs("
+
+        var ShowOrHide = {};
+        ShowOrHide['0'] = 'none';
+        ShowOrHide['1'] = 'block';
+        clickTimes = 1;
+
+        $('#searchBtn').click(function(){
+            $('.article-search').css('display', ShowOrHide[clickTimes % 2]);
+            clickTimes ++;
+        });
+
+    ", \yii\web\View::POS_READY);
+?>
+
+<div class="article-search" style="display:none" id="searchForm">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],

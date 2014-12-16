@@ -28,11 +28,12 @@ class StaffLogin extends Model
 
     public function validatePwd($attribute, $params)
     {/*{{{*/
-        if ($this->hasErrors())
-            return;
-        $staff = $this->getStaff($this->name);
+        if ($this->hasErrors()) return;
+        $staff = $this->getStaff();
         if ( !$staff || !Yii::$app->getSecurity()->validatePassword($this->$attribute, $this->staff->$attribute))
-            $this->addError($attribute, 'Incorrect username or password.');
+            $this->addError($attribute, '用户名或密码不正确!');
+        elseif ($staff->is_disabled === Staff::DISABLED)
+            $this->addError('name', '该用户已被冻结!');
     }/*}}}*/
 
     public function attributeLabels()
@@ -47,7 +48,7 @@ class StaffLogin extends Model
     public function getStaff()
     {/*{{{*/
         if (!$this->_staff)
-            $this->_staff= Staff::find()->where(['name' => $this->name])->one();
+            $this->_staff = Staff::find()->where([ 'name' => $this->name ])->one();
 
         return $this->_staff;
     }/*}}}*/

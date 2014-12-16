@@ -65,18 +65,18 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'rate',
             // 'verified_staff_id',
             // 'remark',
-            [
-                'attribute' => 'is_published',
-                'value' => function ($model) {
-                    return Yii::$app->params['enumData']['is_published'][$model->is_published];
-                }
-            ],
-            [
-                'attribute' => 'is_trashed',
-                'value' => function ($model) {
-                    return Yii::$app->params['enumData']['is_trashed'][$model->is_trashed];
-                }
-            ],
+            #[
+            #    'attribute' => 'is_published',
+            #    'value' => function ($model) {
+            #        return Yii::$app->params['enumData']['is_published'][$model->is_published];
+            #    }
+            #],
+            #[
+            #    'attribute' => 'is_trashed',
+            #    'value' => function ($model) {
+            #        return Yii::$app->params['enumData']['is_trashed'][$model->is_trashed];
+            #    }
+            #],
             // 'actual_send_at',
             // 'publiced_url:url',
             // 'reprint_num',
@@ -88,18 +88,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons' => [
                     'verify' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-screenshot'
+                            'class' => 'glyphicon glyphicon-screenshot',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '审核',
                         ]);
                     },
                     'trash' => function ($url, $model, $key) {
                         return Html::a('', $url, [
-                            'class' => 'glyphicon glyphicon-trash'
+                            'class' => 'glyphicon glyphicon-trash',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '删除',
                         ]);
                     },
                     'delete' => function ($url, $model, $key) {
                         return Html::a('', $url, [
                             'class' => 'glyphicon glyphicon-fire',
-                            'title' => 'Delete',
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                            'title' => '销毁',
                             'data-confirm' => 'Are you sure you want to delete this item?',
                             'data-method' => 'post',
                             'data-pjax' => '0',
@@ -112,3 +120,9 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 </div>
+
+<?php
+    $this->registerJs("
+        $('[data-toggle=\"tooltip\"]').tooltip(); 
+    ", \yii\web\View::POS_READY);
+?>
