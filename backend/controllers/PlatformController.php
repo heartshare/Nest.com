@@ -31,7 +31,7 @@ class PlatformController extends BackendController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['view', 'update', 'delete'],
+                        'actions' => ['view', 'update', 'delete', 'trash'],
                         'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
                             return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
@@ -66,10 +66,21 @@ class PlatformController extends BackendController
      */
     public function actionIndex()
     {/*{{{*/
+
+        # 如果当前登录者的角色为 role/leader, 可以见到被 trashed 的记录
+        $roles = Yii::$app->authmanager->getRolesByUser(Yii::$app->getUser()->identity->id);
+        if (isset($roles['god']) || isset($roles['leader']))
+            $where = [];
+        else {
+            $where = [
+                'is_trashed' => Platform::UNTRASHED,
+            ];
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => Platform::find()->select([
                 'id', 'name', 'ctime', 'staff_id'
-            ]),
+            ])->where($where),
         ]);
 
         return $this->render('index', [
@@ -98,9 +109,8 @@ class PlatformController extends BackendController
     {/*{{{*/
         $model = new Platform();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
 
         return $this->render('create', [
             'model' => $model,

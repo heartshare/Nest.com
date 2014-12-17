@@ -1,6 +1,12 @@
 #!/bin/bash
-mysql -u haoliang -e 'drop database if exists blue; create database blue default character set utf8';
-./yii migrate
-./yii migrate --migrationPath=@yii/rbac/migrations
-./yii rbac/init
-
+echo "do you mean to init whole database? (y|n)"
+read meanIt
+if [[ $meanIt == 'y' ]]; then
+    mysql -u haoliang -e 'drop database if exists blue; create database blue default character set utf8';
+    echo "database blue has been droped and rebuilt"
+    ./yii migrate --migrationPath=@yii/rbac/migrations
+    ./yii rbac/init
+    ./yii migrate
+else
+    echo "without change, exit"
+fi

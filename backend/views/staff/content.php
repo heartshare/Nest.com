@@ -19,10 +19,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $form = ActiveForm::begin(); ?>
 
+    <?php
+        $staffCategory = StaffCategory::find()->asArray()->all();
+        $staffCategory2 = [];
+        foreach ($staffCategory as $v) {
+            $staffCategory2[$v['unique_id']] = $v;
+        }
+        Yii::$app->getSession()->setFlash('staffCategory', $staffCategory2);
+        unset($staffCategory, $staffCategory2);
+    ?>
+
     <?= GridView::widget([
         'dataProvider' => $categoryProvider,
         'columns' => [
-            ['class' => 'yii\grid\CheckboxColumn'],
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'checkboxOptions' => function ($model, $key, $index, $checkbox) {
+                    $staffCategory = Yii::$app->getSession()->getFlash('staffCategory');
+                    $uniqueId = Yii::$app->getRequest()->get('id').$model->id;
+                    if (isset($staffCategory[$uniqueId]))
+                        return ['checked' => 'checked'];
+                },
+            ],
             'name',
             [
                 'attribute' => '分类下内容的管理',
@@ -30,12 +48,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
 
                     # 根据用户编号/分类编号确定并获取 表staff_category中唯一的一条记录
-                    $staffCategoryModel = StaffCategory::getByUniqueId(Yii::$app->getRequest()->get('id').$model->id);
+                    $uniqueId = Yii::$app->getRequest()->get('id').$model->id;
+                    $staffCategory = Yii::$app->getSession()->getFlash('staffCategory');
                     $permissionArr = Yii::$app->params['enumData']['staff_category'];
                     $selected = [];
-                    foreach (array_keys($permissionArr) as $p) {
-                        if ($staffCategoryModel [$p])
-                            $selected[] = $p;
+                    if (isset($staffCategory[$uniqueId])) {
+                        foreach (array_keys($permissionArr) as $p) {
+                            if ($staffCategory[$uniqueId][$p])
+                                $selected[] = $p;
+                        }
                     }
 
                     return Html::checkboxList(
@@ -58,6 +79,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="form-group">
         <?= Html::submitButton('submit', ['class' => 'btn btn-success']) ?>
     </div>
+
+    <?php
+        Yii::$app->getSession()->removeFlash('staffCategory');
+    ?>
 
 <?php ActiveForm::end(); ?>
 

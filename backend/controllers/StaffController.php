@@ -219,26 +219,32 @@ class StaffController extends BackendController
         ]);
         $staff = $this->findModel($id);
 
-        $post = Yii::$app->getRequest()->post();
-        if (isset($post['selection'])) {
-            $categoryArr = $post['selection'];
-            $permissionArr = $post['staff_category'];
+        # 如果是通过表单 post 提交
+        if ( Yii::$app->getRequest()->isPost) {
 
-            foreach ($categoryArr as $category) {
-                $staff_id = $staff->id;
-                $uniqueId           =  $staff_id . $category;
+            # 重置所有权限
 
-                # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
-                $model              = StaffCategory::getByUniqueId($uniqueId);
-                $model->staff_id    = $staff_id;
-                $model->category_id = $category;
-                $model->unique_id   = $uniqueId;
-                $model->can_browse  = $model->can_verify = $model->can_curd = 0;
-                foreach ($permissionArr[$category] as $permission) {
-                    $model->$permission = 1;
+            $post = Yii::$app->getRequest()->post();
+            # 选中已被赋予的权限
+
+            if (isset($post['selection'])) {
+
+                foreach ($post['selection'] as $category) {
+                    $staff_id = $staff->id;
+                    $uniqueId = $staff_id . $category;
+
+                    # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
+                    $model              = StaffCategory::getByUniqueId($uniqueId);
+                    $model->staff_id    = $staff_id;
+                    $model->category_id = $category;
+                    $model->unique_id   = $uniqueId;
+                    $model->can_browse  = $model->can_verify = $model->can_curd = 0;
+                    foreach ($post['staff_category'][$category] as $permission) {
+                        $model->$permission = 1;
+                    }
+                    if (!$model->save())
+                        \d($model->getErrors());
                 }
-                if (!$model->save())
-                    \d($model->getErrors());
             }
         }
 

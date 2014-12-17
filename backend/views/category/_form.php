@@ -13,11 +13,6 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'platform_id')->dropDownList(
-        ArrayHelper::map($platform, 'id', 'name'),
-        ['prompt' => ' -- please select -- ']
-    ) ?>
-
     <?= $form->field($model, 'account_id')->dropDownList(
         ArrayHelper::map($account, 'id', 'name'),
         ['prompt' => ' -- please select -- ']

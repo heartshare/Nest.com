@@ -66,10 +66,12 @@ class AccountController extends BackendController
      */
     public function actionIndex()
     {/*{{{*/
+        $tableName = Account::tableName(). '.';
         $dataProvider = new ActiveDataProvider([
             'query' => Account::find()->select([
-                'id', 'platform_id', 'staff_id', 'name', 'uid'
-            ]),
+                $tableName.'id', $tableName.'platform_id',
+                $tableName.'staff_id', $tableName.'name', $tableName.'uid'
+            ])->joinWith('categories')->joinWith('staff'),
         ]);
 
         return $this->render('index', [
@@ -98,12 +100,8 @@ class AccountController extends BackendController
     {/*{{{*/
         $model = new Account();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        echo "<br> <br> <br> <br>";
-        \d($model->getErrors());
 
         return $this->render('create', [
             'model' => $model,
@@ -121,13 +119,13 @@ class AccountController extends BackendController
     {/*{{{*/
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+
+        return $this->render('update', [
+            'model' => $model,
+            'platform' => Platform::find()->all(),
+        ]);
     }/*}}}*/
 
     /**

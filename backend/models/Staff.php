@@ -69,6 +69,7 @@ class Staff extends Backend implements \yii\web\IdentityInterface
             ['name', 'match', 'pattern' => '/^[0-9a-zA-z-.]{2,20}$/', 'message' => '必须为2-20位的数字/字母/下划线任意组合'],
             ['name', 'unique'],
             ['avatar', 'image', 'skipOnEmpty' => true, 'extensions' => 'gif, jpg, png, jpeg'],
+            ['phone', 'match', 'pattern' => '/^1\d{10}$/', 'message' => '请输入您真实的手机号']
         ];
     }/*}}}*/
 

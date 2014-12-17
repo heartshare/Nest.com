@@ -10,6 +10,7 @@ class m141204_032239_insert_data extends Migration
         # staff
         $this->insert('{{%staff}}', [
             'staff_id' => 0,
+            'role_id' => 'god',
             'name' => 'haoliang',
             'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
             'ctime' => '1417663527',
@@ -19,6 +20,7 @@ class m141204_032239_insert_data extends Migration
         ]);
         $this->insert('{{%staff}}', [
             'staff_id' => 1,
+            'role_id' => 'leader',
             'name' => 'leader',
             'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
             'ctime' => '1417663527',
@@ -28,6 +30,7 @@ class m141204_032239_insert_data extends Migration
         ]);
         $this->insert('{{%staff}}', [
             'staff_id' => 1,
+            'role_id' => 'editor',
             'name' => 'editor',
             'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
             'ctime' => '1417663527',
@@ -37,6 +40,7 @@ class m141204_032239_insert_data extends Migration
         ]);
         $this->insert('{{%staff}}', [
             'staff_id' => 1,
+            'role_id' => 'inspector',
             'name' => 'inspector',
             'pwd' => '$2y$13$uLOIdWSsj.wHUklpkoaH6.cOxrshlevg5k34D2x0EBtLBh0p85Q.6',
             'ctime' => '1417663527',
@@ -72,7 +76,6 @@ class m141204_032239_insert_data extends Migration
         ]);
         # category
         $this->insert('{{%category}}', [
-            "platform_id" => 1,
             "account_id"  => 1,
             "staff_id"    => 1,
             "name"        => "音乐",

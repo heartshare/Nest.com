@@ -14,7 +14,7 @@ abstract class BackendController extends \yii\web\Controller
     private $_model = false;
 
     /**
-      * @brief trash but not delete a record
+      * @brief trash but not real delete a record
       * @param $id
       * @return page
      */

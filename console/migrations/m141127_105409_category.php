@@ -12,7 +12,6 @@ class m141127_105409_category extends Migration
         $tableOptions = "engine=innodb default charset=utf8 collate=utf8_unicode_ci comment '媒体分类'";
         $this->createTable($this->tableName,[
             "id"          => "pk comment '编号'",
-            "platform_id" => "integer not null comment '媒体平台编号'",
             "account_id"  => "integer not null comment '媒体账户编号'",
             "staff_id"    => "integer not null comment '创建者编号'",
             "name"        => "string(10) not null comment '分类名称'",

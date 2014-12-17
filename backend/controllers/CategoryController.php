@@ -4,7 +4,6 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Category;
-use backend\models\Platform;
 use backend\models\Account;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
@@ -71,7 +70,7 @@ class CategoryController extends BackendController
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
             'query' => Category::find()->select([
-                'id', 'platform_id', 'account_id', 'staff_id', 'name', 'summary', 'ctime'
+                'id', 'account_id', 'staff_id', 'name', 'summary', 'ctime'
             ]),
         ]);
         return $this->render('index', [
@@ -106,7 +105,6 @@ class CategoryController extends BackendController
 
         return $this->render('create', [
             'model' => $model,
-            'platform' => Platform::find()->asArray()->all(),
             'account' => Account::find()->asArray()->all(),
         ]);
     }/*}}}*/
@@ -127,7 +125,6 @@ class CategoryController extends BackendController
 
         return $this->render('update', [
             'model' => $model,
-            'platform' => Platform::find()->asArray()->all(),
             'account' => Account::find()->asArray()->all(),
         ]);
     }/*}}}*/

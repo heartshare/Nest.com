@@ -27,10 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             [
-                'attribute' => '媒体平台',
-                'value' => $model->platform->name
-            ],
-            [
                 'attribute' => '媒体帐号',
                 'value' => $model->account->name
             ],

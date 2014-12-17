@@ -3,9 +3,12 @@
 namespace backend\controllers;
 
 use Yii;
+
 use backend\models\Content;
 use backend\models\ContentSearch;
 use backend\models\Category;
+use backend\models\StaffCategory;
+
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
@@ -21,6 +24,7 @@ use yii\filters\AccessControl;
  */
 class ContentController extends BackendController
 {
+    # 用户被分配的 can_curd 的分类
     private $_category;
     private $_model = false;
 
@@ -77,7 +81,7 @@ class ContentController extends BackendController
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'category' => $this->category,
+            'category' => Category::find()->asArray()->all(),
         ]);
     }/*}}}*/
 
@@ -88,7 +92,13 @@ class ContentController extends BackendController
      */
     public function actionView($id)
     {/*{{{*/
+
         $model = $this->findModel($id);
+
+        # 非本人创建且为草稿的内容, 不可见
+        if ($model->staff_id !== Yii::$app->getUser()->identity->id && $model->is_draft)
+            throw new ForbiddenHttpException('As record is draft, You are not allowed to perform this action.');
+
         $this->albumSplitHtml($model);
 
         return $this->render('view', [
@@ -103,15 +113,19 @@ class ContentController extends BackendController
      */
     public function actionCreate()
     {/*{{{*/
+
+        $category = $this->getCategory();
+        if (!$category)
+            throw new ForbiddenHttpException('您尚未被分配可以添加内容的分类. You are not allowed to perform this action.');
+
         $model = new Content();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
 
         return $this->render('create', [
             'model' => $model,
-            'category' => $this->category,
+            'category' => $category,
         ]);
     }/*}}}*/
 
@@ -150,8 +164,9 @@ class ContentController extends BackendController
 
         $model = $this->findModel($id);
 
-        if (!Yii::$app->getUser()->can('updateOwnContent', ['model' => $model]))
-            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        # 被审核后的内容不能被修改
+        if ($model->is_verified > Content::WAITFORVERIFY)
+            throw new ForbiddenHttpException('内容已被审核, 不能被修改. You are not allowed to perform this action.');
 
         $this->albumSplitHtml($model);
 
@@ -172,9 +187,31 @@ class ContentController extends BackendController
      */
     public function actionDelete($id)
     {/*{{{*/
-        $this->findModel($id)->delete();
+
+        $model = $this->findModel($id);
+
+        # 被审核后的内容不能被修改
+        if ($model->is_verified > Content::WAITFORVERIFY)
+            throw new ForbiddenHttpException('内容已被审核, 不能被删除. You are not allowed to perform this action.');
+
+        $model->delete();
 
         return $this->redirect(['index']);
+    }/*}}}*/
+
+    /**
+        * @brief trash but not real delete a record
+        * @param $id
+        * @return page
+     */
+    public function actionTrash($id)
+    {/*{{{*/
+        $model = $this->findModel($id);
+        # 被审核后的内容不能被修改
+        if ($model->is_verified > Content::WAITFORVERIFY)
+            throw new ForbiddenHttpException('内容已被审核, 不能被删除. You are not allowed to perform this action.');
+
+        parent::actionTrash($id);
     }/*}}}*/
 
     /**
@@ -210,7 +247,14 @@ class ContentController extends BackendController
     public function getCategory()
     {/*{{{*/
         if (!$this->_category) {
-            $this->_category = Category::find()->asArray()->all();
+            $tableName = StaffCategory::tableName() . '.';
+            $this->_category = StaffCategory::find()
+                ->select([
+                    $tableName.'id', $tableName.'category_id',
+                    Category::tableName().'.name'
+                ])
+                ->where([$tableName.'staff_id' => Yii::$app->getUser()->identity->id])
+                ->joinWith('category')->asArray()->all();
         }
         return $this->_category;
     }/*}}}*/
@@ -231,7 +275,7 @@ class ContentController extends BackendController
         # 确保领导的上级地位, 显示所有记录
         if (! isset($role['god']) && ! isset($role['leader'])) {
             # 当前用户可以浏览[can_browse]的分类
-            $staffCategory = \backend\models\StaffCategory::find()->where([
+            $staffCategory = StaffCategory::find()->where([
                 'staff_id' => $staff_id,
                 'can_browse' => 1,
             ])->asArray()->all();

@@ -18,6 +18,10 @@ use Yii;
  */
 class Platform extends Backend
 {
+
+    const TRASHED = 1;
+    const UNTRASHED = 0;
+
     /**
      * @inheritdoc
      */

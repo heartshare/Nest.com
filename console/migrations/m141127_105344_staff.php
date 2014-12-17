@@ -12,6 +12,7 @@ class m141127_105344_staff extends Migration
         $tableOptions = "engine=innodb default charset=utf8 collate=utf8_unicode_ci comment '员工'";
         $this->createTable($this->tableName,[
             "id"          => "pk comment '编号'",
+            "role_id"     => "string(64) not null comment '角色编号' ",
             "staff_id"    => "integer not null comment '创建者编号'",
             "name"        => "string(20) not null comment '员工名称'",
             "pwd"         => "string(60) not null comment '密码'",

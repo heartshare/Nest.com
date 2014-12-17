@@ -7,8 +7,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Staff */
 
-$this->title = 'Verify Staff: ' . ' ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Staff', 'url' => ['index']];
+$this->title = 'Verify Staff: ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Content', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Verify';
 ?>

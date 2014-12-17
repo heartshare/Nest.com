@@ -12,8 +12,8 @@ class m141204_022040_add_constraint extends Migration
         $this->addForeignKey('fk_article_staff', '{{%article}}', 'staff_id', '{{%staff}}', 'id', 'CASCADE');
         # account
         $this->addForeignKey('fk_account_platform', '{{%account}}', 'platform_id', '{{%platform}}', 'id', 'CASCADE');
+        $this->addForeignKey('fk_account_staff', '{{%account}}', 'staff_id', '{{%staff}}', 'id', 'CASCADE');
         # category
-        $this->addForeignKey('fk_category_platform', '{{%category}}', 'platform_id', '{{%platform}}', 'id', 'CASCADE');
         $this->addForeignKey('fk_category_account', '{{%category}}', 'account_id', '{{%account}}', 'id', 'CASCADE');
         $this->addForeignKey('fk_category_staff', '{{%category}}', 'staff_id', '{{%staff}}', 'id', 'CASCADE');
         # content
@@ -31,7 +31,6 @@ class m141204_022040_add_constraint extends Migration
         # account
         $this->dropForeignKey('fk__account_platform', '{{%account}}');
         # category
-        $this->dropForeignKey('fk_category_platform', '{{%category}}');
         $this->dropForeignKey('fk_category_account', '{{%category}}');
         $this->dropForeignKey('fk_category_staff', '{{%category}}');
         # content

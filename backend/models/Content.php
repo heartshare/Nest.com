@@ -37,6 +37,7 @@ use Yii;
  */
 class Content extends Backend
 {
+    const WAITFORVERIFY = 0;
 
     # 存储将图片集构造为html后的字符串
     public $albumHtml;
