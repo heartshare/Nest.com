@@ -100,6 +100,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => '删除',
+                            'data-confirm' => 'Are you sure you want to delete this item?',
+                            'data-method' => 'post',
                         ]);
                     },
                     'delete' => function ($url, $model, $key) {

@@ -22,6 +22,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             #'formal_at:datetime',
             // 'remark',
+            [
+                'attribute' => 'role_id',
+                'value' => function ($model) {
+                    return Yii::$app->getSession()->getFlash('KVRole')[$model->role_id];
+                }
+            ],
             'real_name',
             // 'qq',
             // 'avatar',
@@ -69,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'title' => '冻结',
                         ]);
                     },
-                    'assign' => function ($url, $model, $key) {
+                    'role' => function ($url, $model, $key) {
                         return Html::a('', $url, [
                             'class' => 'glyphicon glyphicon-flash',
                             'data-toggle' => 'tooltip',
@@ -108,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     },
                 ],
-                'template' => '{view} {update} {password} {reset} {freeze} {assign} {content} {trash} {delete} ',
+                'template' => '{view} {update} {password} {reset} {freeze} {role} {content} {trash} {delete} ',
             ],
         ],
     ]); ?>

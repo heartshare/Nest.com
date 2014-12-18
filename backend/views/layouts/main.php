@@ -42,13 +42,26 @@ AppAsset::register($this);
                 ['label' => '内容', 'url' => ['/content']],
             ];
 
-            if (Yii::$app->user->isGuest) {
+            if (Yii::$app->user->isGuest)
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-            } else {
+            else {
                 $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->name . ')',
-                    'url' => ['/site/logout'],
-                    'linkOptions' => ['data-method' => 'post']
+                    'label' => Yii::$app->getUser()->identity->name,
+                    'items' => [
+                        ['label' => ' 个人信息', 'url' => ['/staff/view', 'id' => Yii::$app->getUser()->identity->id],
+                            'linkOptions' => [ 'class' => 'glyphicon glyphicon-user', ]
+                        ],
+                        ['label' => ' 修改密码', 'url' => ['/staff/password', 'id' => Yii::$app->getUser()->identity->id],
+                            'linkOptions' => [ 'class' => 'glyphicon glyphicon-cog', ]
+                        ],
+                        [
+                            'label' => ' 安全退出', 'url' => ['/site/logout'],
+                            'linkOptions' => [
+                                'data-method' => 'post',
+                                'class' => 'glyphicon glyphicon-log-out',
+                            ]
+                        ]
+                    ],
                 ];
             }
 

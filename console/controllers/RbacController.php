@@ -56,10 +56,10 @@ class RbacController extends \yii\console\Controller
         $passwordStaff = $auth->createPermission('passwordStaff');
         $passwordStaff->description = 'password staff';
         $auth->add($passwordStaff);
-        # assign
-        $assignStaff = $auth->createPermission('assignStaff');
-        $assignStaff->description = 'assign staff';
-        $auth->add($assignStaff);
+        # role
+        $roleStaff = $auth->createPermission('roleStaff');
+        $roleStaff->description = 'role staff';
+        $auth->add($roleStaff);
         # content
         $contentStaff = $auth->createPermission('contentStaff');
         $contentStaff->description = 'content staff';
@@ -221,7 +221,7 @@ class RbacController extends \yii\console\Controller
         $auth->addChild($god, $deleteStaff);
         $auth->addChild($god, $trashStaff);
         $auth->addChild($god, $passwordStaff);
-        $auth->addChild($god, $assignStaff);
+        $auth->addChild($god, $roleStaff);
         $auth->addChild($god, $contentStaff);
         $auth->addChild($god, $resetStaff);
         # article
@@ -273,7 +273,7 @@ class RbacController extends \yii\console\Controller
         $auth->addChild($leader, $freezeStaff);
         $auth->addChild($leader, $trashStaff);
         $auth->addChild($leader, $passwordStaff);
-        $auth->addChild($leader, $assignStaff);
+        $auth->addChild($leader, $roleStaff);
         # article
         $auth->addChild($leader, $createArticle);
         $auth->addChild($leader, $updateArticle);
@@ -320,47 +320,55 @@ class RbacController extends \yii\console\Controller
         $auth->addChild($inspector, $indexContent);
         $auth->addChild($inspector, $viewContent);
 
+        # staff [default]
+        $staff = $auth->createRole('staff');
+        $staff->description = '员工';
+        $auth->add($staff);
+
         ## grade level
         #         god
         #        leader
         #   editor  inspector
+        #       staff
         $auth->addChild($god, $leader);
         $auth->addChild($leader, $editor);
         $auth->addChild($leader, $inspector);
+        $auth->addChild($inspector, $staff);
+        $auth->addChild($editor, $staff);
 
         echo "create four role {god, leader, editor, inspector} \n";
 
         #############################################################################
         # rule
 
-        # add rule
-        $rule = new \backend\rbac\OwnerRule;
-        $auth->add($rule);
+        # add own rule
+        $ownerRule = new \backend\rbac\OwnerRule;
+        $auth->add($ownerRule);
 
         # content.update
         $updateOwnContent = $auth->createPermission('updateOwnContent');
         $updateOwnContent->description = '修改本人添加的内容';
-        $updateOwnContent->ruleName = $rule->name;
+        $updateOwnContent->ruleName = $ownerRule->name;
         $auth->add($updateOwnContent);
         # content.delete
         $deleteOwnContent = $auth->createPermission('deleteOwnContent');
         $deleteOwnContent->description = '删除本人添加的内容';
-        $deleteOwnContent->ruleName = $rule->name;
+        $deleteOwnContent->ruleName = $ownerRule->name;
         $auth->add($deleteOwnContent);
         # content.trash
         $trashOwnContent = $auth->createPermission('trashOwnContent');
         $trashOwnContent->description = '软删除本人添加的内容';
-        $trashOwnContent->ruleName = $rule->name;
+        $trashOwnContent->ruleName = $ownerRule->name;
         $auth->add($trashOwnContent);
         # content.index
         $indexOwnContent = $auth->createPermission('indexOwnContent');
         $indexOwnContent->description = '查看本人添加的内容列表';
-        $indexOwnContent->ruleName = $rule->name;
+        $indexOwnContent->ruleName = $ownerRule->name;
         $auth->add($indexOwnContent);
         # content.view
         $viewOwnContent = $auth->createPermission('viewOwnContent');
         $viewOwnContent->description = '查看本人添加的内容的详情';
-        $viewOwnContent->ruleName = $rule->name;
+        $viewOwnContent->ruleName = $ownerRule->name;
         $auth->add($viewOwnContent);
 
         $auth->addChild($updateOwnContent, $auth->getPermission('updateContent'));
@@ -374,6 +382,36 @@ class RbacController extends \yii\console\Controller
         $auth->addChild($auth->getRole('editor'), $viewOwnContent);
 
         echo "create additional rule {index, view, udpate, freeze, trash, delete} \n";
+
+        # add about-me rule
+        $aboutMeRule = new \backend\rbac\AboutMeRule;
+        $auth->add($aboutMeRule);
+
+        # staff.view
+        $viewOwnStaff = $auth->createPermission('viewOwnStaff');
+        $viewOwnStaff->description = '查看个人信息';
+        $viewOwnStaff->ruleName = $aboutMeRule->name;
+        $auth->add($viewOwnStaff);
+        # staff.update
+        $updateOwnStaff = $auth->createPermission('updateOwnStaff');
+        $updateOwnStaff->description = '修改个人信息';
+        $updateOwnStaff->ruleName = $aboutMeRule->name;
+        $auth->add($updateOwnStaff);
+        # staff.password
+        $passwordOwnStaff = $auth->createPermission('passwordOwnStaff');
+        $passwordOwnStaff->description = '修改个人密码';
+        $passwordOwnStaff->ruleName = $aboutMeRule->name;
+        $auth->add($passwordOwnStaff);
+
+        $auth->addChild($viewOwnStaff, $auth->getPermission('viewStaff'));
+        $auth->addChild($updateOwnStaff, $auth->getPermission('updateStaff'));
+        $auth->addChild($passwordOwnStaff, $auth->getPermission('passwordStaff'));
+
+        $auth->addChild($auth->getRole('staff'), $viewOwnStaff);
+        $auth->addChild($auth->getRole('staff'), $updateOwnStaff);
+        $auth->addChild($auth->getRole('staff'), $passwordOwnStaff);
+
+        echo "create additional rule {view, update, password} \n";
 
         #############################################################################
         # assign

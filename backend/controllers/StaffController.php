@@ -39,11 +39,11 @@ class StaffController extends BackendController
             ],
             'acess' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'assign', 'trash'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'role', 'trash'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['view', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'assign', 'trash'],
+                        'actions' => ['view', 'update', 'delete', 'password', 'reset', 'freeze', 'content', 'role', 'trash'],
                         'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
                             return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id), [
@@ -80,10 +80,12 @@ class StaffController extends BackendController
     {/*{{{*/
         $dataProvider = new ActiveDataProvider([
             'query' => Staff::find()->select([
-                'id', 'name', 'ctime', 'is_disabled', 'time_kind', 
+                'id', 'name', 'ctime', 'is_disabled', 'time_kind', 'role_id',
                 'formal_at', 'real_name', 'phone', 'alipay'
             ])->where(['is_trashed' => 0]),
         ]);
+
+        Yii::$app->getSession()->setFlash('KVRole', $this->getKVRole());
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -117,12 +119,9 @@ class StaffController extends BackendController
                 return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        $role = Yii::$app->authmanager->getRoles();
-        $role = \yii\helpers\ArrayHelper::map($role, 'name', 'description');
-
         return $this->render('create', [
             'model' => $model,
-            'role' => $role,
+            'role' => $this->getKVRole(),
         ]);
     }/*}}}*/
 
@@ -138,13 +137,13 @@ class StaffController extends BackendController
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $this->dealSingleUploadFile($model, 'avatar');
-            #$model->formal_at = strtotime($model->formal_at);
             if ($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'role' => $this->getKVRole(),
         ]);
     }/*}}}*/
 
@@ -221,16 +220,19 @@ class StaffController extends BackendController
 
         # 如果是通过表单 post 提交
         if ( Yii::$app->getRequest()->isPost) {
+            $staff_id = $staff->id;
+            # 保存提示信息
+            $message = [];
+            $post = Yii::$app->getRequest()->post();
 
             # 重置所有权限
-
-            $post = Yii::$app->getRequest()->post();
-            # 选中已被赋予的权限
+            $sc = StaffCategory::find()->where(['staff_id' => $staff_id])->all();
+            if (!array_walk($sc, function ($item) { $item->delete(); }))
+                throw new \yii\web\ServerException('重置所有权限失败!');
 
             if (isset($post['selection'])) {
 
                 foreach ($post['selection'] as $category) {
-                    $staff_id = $staff->id;
                     $uniqueId = $staff_id . $category;
 
                     # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
@@ -238,14 +240,31 @@ class StaffController extends BackendController
                     $model->staff_id    = $staff_id;
                     $model->category_id = $category;
                     $model->unique_id   = $uniqueId;
+
+                    # 重置所有权限
                     $model->can_browse  = $model->can_verify = $model->can_curd = 0;
-                    foreach ($post['staff_category'][$category] as $permission) {
-                        $model->$permission = 1;
+                    $permissionArr = isset($post['staff_category'][$category]) ? $post['staff_category'][$category]: false;
+                    if ($permissionArr) {
+                        foreach ($permissionArr as $permission) {
+                            $model->$permission = 1;
+                        }
                     }
+
+                    # 保存错误信息
                     if (!$model->save())
-                        \d($model->getErrors());
+                        $message = [
+                            'status' => false,
+                            #'info' => $model->getErrors()
+                            'info' => '分配失败'
+                        ];
                 }
             }
+
+            # 提示成功信息
+            if (!$message)
+                $message = ['status' => true, 'info' => '分配成功!'];
+
+            Yii::$app->getSession()->setFlash('contentMessage', $message);
         }
 
         return $this->render('content', [
@@ -259,15 +278,18 @@ class StaffController extends BackendController
     * @param $id
     * @return page
     */
-    public function actionAssign($id)
+    public function actionRole($id)
     {/*{{{*/
-        $auth = Yii::$app->authmanager;
-        \d(Yii::$app->getRequest()->post());
-        return $this->render('assign', [
-            'model' => (new AssignForm),
+        $model = $this->findModel($id);
+        $model->scenario = 'role';
+
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->save())
+            return $this->redirect(['view', 'id' => $id]);
+
+        return $this->render('role', [
+            'model' => $model,
             'staff' => Staff::findById($id),
-            'roleArr' => $auth->getRoles(),
-            'permissionArr' => $auth->getPermissions(),
+            'role' => $this->getKVRole(),
         ]);
     }/*}}}*/
 
@@ -327,6 +349,12 @@ class StaffController extends BackendController
             $model->$attribute = $fileName;
         } else
             unset($model->$attribute);
+    }/*}}}*/
+
+    protected function getKVRole()
+    {/*{{{*/
+        $role = Yii::$app->authmanager->getRoles();
+        return \yii\helpers\ArrayHelper::map($role, 'name', 'description');
     }/*}}}*/
 
 }

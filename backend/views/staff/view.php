@@ -27,6 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'name',
+            [
+                'attribute' => 'role_id',
+                'value' => $model->role_id ? Yii::$app->authmanager->getRole($model->role_id)->description : ''
+            ],
             'ctime:datetime',
             [
                 'attribute' => 'is_disabled',
@@ -43,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'avatar',
                 'format' => 'raw',
-                'value' => Html::img('@web/uploads/' . $model->avatar, ['alt' => $model->name . '\'s avatar', 'style' => "height:200px;"])
+                'value' => Html::img('@web/uploads/' . $model->avatar, ['alt' => $model->name . '\'s avatar', 'style' => "height:80px;"])
             ],
             'phone',
             'alipay',

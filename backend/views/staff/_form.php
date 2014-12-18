@@ -14,10 +14,12 @@ use kartik\date\DatePicker;
 
     <?php $form = ActiveForm::begin([ 'options' => [ 'enctype' => 'multipart/form-data' ] ]); ?>
 
-    <?= $form->field($model, 'role')->dropDownList(
+    <?php if (Yii::$app->controller->action->id == 'create') : ?>
+    <?= $form->field($model, 'role_id')->dropDownList(
         $role,
         ['prompt' => ' -- please select -- ']
     ); ?>
+    <?php endif ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 20]) ?>
 
@@ -39,6 +41,8 @@ use kartik\date\DatePicker;
     <?= $form->field($model, 'real_name')->textInput(['maxlength' => 10]) ?>
 
     <?= $form->field($model, 'qq')->textInput(['maxlength' => 12]) ?>
+
+    <?= Html::img( Yii::$app->request->baseUrl . Yii::$app->params['uploadDir'] . '/' . $model->avatar, ['style' => 'height: 80px;']); ?>
 
     <?= $form->field($model, 'avatar')->fileInput() ?>
 

@@ -247,14 +247,11 @@ class ContentController extends BackendController
     public function getCategory()
     {/*{{{*/
         if (!$this->_category) {
-            $tableName = StaffCategory::tableName() . '.';
-            $this->_category = StaffCategory::find()
-                ->select([
-                    $tableName.'id', $tableName.'category_id',
-                    Category::tableName().'.name'
-                ])
-                ->where([$tableName.'staff_id' => Yii::$app->getUser()->identity->id])
-                ->joinWith('category')->asArray()->all();
+            $this->_category = StaffCategory::find()->select(['category_id as id'])
+                ->where(['staff_id' => Yii::$app->getUser()->identity->id])
+                ->asArray()->all();
+
+            $this->_category = Category::find()->where(['id' => array_column($this->_category, 'id')])->all();
         }
         return $this->_category;
     }/*}}}*/

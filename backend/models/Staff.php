@@ -52,7 +52,7 @@ class Staff extends Backend implements \yii\web\IdentityInterface
     {/*{{{*/
         return [
             [
-                ['name', 'is_disabled', 'time_kind', 'formal_at', 'role'],
+                ['name', 'is_disabled', 'time_kind', 'formal_at', 'role_id'],
                 'required', 'message' => '请填写 {attribute}'
             ],
             [['is_trashed', 'staff_id', 'ctime', 'is_disabled', 'time_kind'], 'integer', 'message' => '{attribute} 只能填写数字'],
@@ -62,7 +62,7 @@ class Staff extends Backend implements \yii\web\IdentityInterface
             [['real_name'], 'string', 'max' => 10],
             [['qq'], 'string', 'max' => 12],
             [['phone'], 'string', 'max' => 15],
-            ['role', 'string'],
+            ['role_id', 'string'],
 
             # 以时间戳保存的时间, 页面选择时是常规时间格式
             [['formal_at'], 'date', 'format' => 'php:Y-m-d'],
@@ -84,6 +84,7 @@ class Staff extends Backend implements \yii\web\IdentityInterface
             'is_disabled' => '禁用',
             'time_kind' => '工作时间',
             'formal_at' => '转正时间',
+            'role_id' => '角色',
 
             'is_trashed'  => '是否已软删除',
 
@@ -102,6 +103,7 @@ class Staff extends Backend implements \yii\web\IdentityInterface
         $s = parent::scenarios();
         $s['password'] = ['pwd'];
         $s['freeze'] = ['is_disabled'];
+        $s['role'] = ['role_id'];
         return $s;
     }/*}}}*/
 
@@ -130,22 +132,42 @@ class Staff extends Backend implements \yii\web\IdentityInterface
     {/*{{{*/
         parent::afterSave($isInsert, $changedAttributes);
 
+        # 添加单个角色
+        $addRole = function ($model) {
+            $auth = Yii::$app->authmanager;
+            $auth->assign($auth->getRole($model->role_id), $model->id);
+        };
+
         # 添加员工后, 绑定角色
         if ($isInsert) {
-            # add role
-            $auth = Yii::$app->authmanager;
-            $auth->assign($auth->getRole($this->role), $this->id);
-        }
-
-        # 更新数据时, 新旧头像替换
-        if (!$isInsert && isset($changedAttributes['avatar']))
+            $addRole($this);
+            # 更新数据时, 新旧头像替换
+        } elseif(isset($changedAttributes['avatar'])) {
             @unlink( Yii::$app->params['uploadDir'] . '/' . $changedAttributes['avatar']);
+            # 修改员工角色
+        } elseif (Yii::$app->controller->action->id == 'role') {
+            # 移除已有角色
+            $this->emptyRole($this->id);
+            # 增加员工角色
+            $addRole($this);
+        }
 
     }/*}}}*/
 
     public function afterDelete()
     {/*{{{*/
+        # 员工记录被删除后, 删除头像
         @unlink( Yii::$app->params['uploadDir'] . '/' . $this->avatar);
+        # 删除 分配的角色记录
+        $this->emptyRole($this->id);
+    }/*}}}*/
+
+    protected function emptyRole($staff_id)
+    {/*{{{*/
+        # 删除 分配的角色记录
+        Yii::$app->db->createCommand()->delete( 'auth_assignment', [
+            'user_id' => $staff_id
+        ])->execute();
     }/*}}}*/
 
     public function generateInitPassword()

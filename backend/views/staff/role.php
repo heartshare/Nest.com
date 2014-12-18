@@ -10,23 +10,20 @@ use backend\models\StaffCategory;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Staff */
 
-$this->title = 'assign';
+$this->title = 'role';
 $this->params['breadcrumbs'][] = ['label' => 'Staff', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="staff-assign">
 
-<h3>请选择要给 <?= Html::a($staff->name, ['view', 'id' => $staff->id]) ?> 分配的权限</h3>
+<h3>请选择要给 <?= Html::a($staff->name, ['view', 'id' => $staff->id]) ?> 分配的角色</h3>
 
 <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'role')->dropDownList(
-        ArrayHelper::map($roleArr, 'name', 'description'),
-        ['prompt' => ' -- please select --']
-    ); ?>
 
-    <?= $form->field($model, 'permission')->checkboxList(
-        ArrayHelper::map($permissionArr, 'name', 'description')
+    <?= $form->field($model, 'role_id')->label(false)->dropDownList(
+        $role,
+        ['prompt' => ' -- please select --']
     ); ?>
 
     <div class="form-group">

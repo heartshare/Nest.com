@@ -5,7 +5,6 @@ use yii\grid\GridView;
 use yii\widgets\ActiveForm;
 use backend\models\StaffCategory;
 
-
 /* @var $this yii\web\View */
 /* @var $model backend\models\Staff */
 
@@ -16,6 +15,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="staff-content">
 
 <h3>请选择要给 <?= Html::a($staff->name, ['view', 'id' => $staff->id]) ?> 分配的权限</h3>
+
+<?php if (($message = Yii::$app->getSession()->getFlash('contentMessage')) !== null) : ?>
+    <?= \yii\bootstrap\Alert::widget([
+        'options' => [
+            'class' =>  $message['status'] ? 'alert-info' : 'alert-warning',
+        ],
+        'body' => $message['info'],
+    ]); ?>
+<?php Yii::$app->getSession()->removeFlash('contentErrors'); ?>
+<?php endif ?>
 
 <?php $form = ActiveForm::begin(); ?>
 
@@ -37,8 +46,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'checkboxOptions' => function ($model, $key, $index, $checkbox) {
                     $staffCategory = Yii::$app->getSession()->getFlash('staffCategory');
                     $uniqueId = Yii::$app->getRequest()->get('id').$model->id;
+
+                    $options = [];
+                    $options['value'] = $model->id;
                     if (isset($staffCategory[$uniqueId]))
-                        return ['checked' => 'checked'];
+                        $options['checked'] = true;
+
+                    return $options;
                 },
             ],
             'name',

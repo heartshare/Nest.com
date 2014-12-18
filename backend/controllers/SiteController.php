@@ -48,12 +48,13 @@ class SiteController extends BackendController
     public function actionIndex()
     {/*{{{*/
 
+
         #\dd(Yii::$app->getUser()->can('updateOwnContent'));
-        $auth = Yii::$app->authManager;
+        #$auth = Yii::$app->authManager;
         #\dd( $auth->getAssignments( Yii::$app->getUser()->identity->id), $auth->getPermissions(), $auth->getRoles(), $auth->getRules());
 
         #$staff_id = Yii::$app->getUser()->identity->id;
-        #\dd($auth->getPermissionsByUser($staff_id ?: 1));
+        #\d($auth->getPermissionsByUser($staff_id ?: 1));
         #\d("<br> <br> <br> <br> <br>", Yii::$app->getSecurity()->generatePasswordHash('languo123'));
 
         return $this->render('index');
