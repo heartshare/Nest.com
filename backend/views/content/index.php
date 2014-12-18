@@ -27,19 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            [
-                'attribute' => 'category_id',
-                'value' => function ($model) {
-                    return $model->category->name;
-                }
-            ],
-            [
-                'attribute' => 'staff_id',
-                'value' => function ($model) {
-                    return $model->staff->name;
-                }
-            ],
             'title',
             'content:html',
             'expect_send_at:datetime',
@@ -59,6 +46,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'is_verified',
                 'value' => function ($model) {
                     return Yii::$app->params['enumData']['is_verified'][$model->is_verified];
+                }
+            ],
+            [
+                'attribute' => 'staff_id',
+                'value' => function ($model) {
+                    return $model->staff->name;
+                }
+            ],
+            [
+                'attribute' => 'category_id',
+                'value' => function ($model) {
+                    return $model->category->name;
                 }
             ],
             // 'verified_at',

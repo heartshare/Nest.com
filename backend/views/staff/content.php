@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\CheckboxColumn',
                 'checkboxOptions' => function ($model, $key, $index, $checkbox) {
                     $staffCategory = Yii::$app->getSession()->getFlash('staffCategory');
-                    $uniqueId = Yii::$app->getRequest()->get('id').$model->id;
+                    $uniqueId = $model::catUniqueId(Yii::$app->getRequest()->get('id'), $model->id);
 
                     $options = [];
                     $options['value'] = $model->id;
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
 
                     # 根据用户编号/分类编号确定并获取 表staff_category中唯一的一条记录
-                    $uniqueId = Yii::$app->getRequest()->get('id').$model->id;
+                    $uniqueId = $model::catUniqueId(Yii::$app->getRequest()->get('id'), $model->id);
                     $staffCategory = Yii::$app->getSession()->getFlash('staffCategory');
                     $permissionArr = Yii::$app->params['enumData']['staff_category'];
                     $selected = [];

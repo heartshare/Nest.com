@@ -21,6 +21,10 @@ use Yii;
  */
 class Article extends Backend
 {
+
+    # 保存要存入到 {{%article_category}} 中的数据
+    public $article_category;
+
     /**
      * @inheritdoc
      */
@@ -35,7 +39,7 @@ class Article extends Backend
     public function rules()
     {/*{{{*/
         return [
-            [['title', 'content', 'is_draft', 'staff_visible', 'is_top'], 'required'],
+            [['title', 'content', 'is_draft', 'staff_visible', 'is_top', 'article_category'], 'required'],
             [['is_trashed', 'staff_id', 'is_draft', 'staff_visible', 'is_top', 'ctime', 'top_rank'], 'integer'],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255]
@@ -58,6 +62,7 @@ class Article extends Backend
             'ctime' => '创建时间',
             'top_rank' => '置顶权重',
             'is_trashed'  => '是否已软删除',
+            'article_category' => '分类可见性',
         ];
     }/*}}}*/
 
@@ -79,6 +84,40 @@ class Article extends Backend
             return true;
         }
         return false;
+    }/*}}}*/
+
+    public function afterSave($isInsert, $changedArrtibutes)
+    {/*{{{*/
+        parent::afterSave($isInsert, $changedArrtibutes);
+
+        $addArticleCategory = function ($articleCategory, $article_id)
+        {/*{{{*/
+            $message = [];
+            if ($articleCategory && is_array($articleCategory)) {
+                foreach ($articleCategory as $item) {
+                    $uniqueId = static::catUniqueId($article_id, $item);
+                    $model = ArticleCategory::findByUniqueId($uniqueId);
+                    $model->article_id = $article_id;
+                    $model->category_id = $item;
+                    $model->unique_id = $uniqueId;
+                    # 记录错误消息
+                    if (!$model->save())
+                        $message = $model->getErrors();
+                }
+            }
+            if ($message)
+                throw new \yii\web\ServerException('添加 article_category表失败');
+        };/*}}}*/
+
+        # 创建/修改文章, 保存与 category 的关系
+        if ($isInsert) {
+            $addArticleCategory($this->article_category, $this->id);
+        } else {
+            # 删除所有记录
+            Yii::$app->db->createCommand()
+                ->delete('{{%article_category}}', [ 'article_id' => $this->id ])->execute();
+            $addArticleCategory($this->article_category, $this->id);
+        }
     }/*}}}*/
 
 }

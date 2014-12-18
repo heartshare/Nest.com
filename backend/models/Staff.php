@@ -34,9 +34,6 @@ class Staff extends Backend implements \yii\web\IdentityInterface
     const DISABLED = 1;
     const ENABLED = 0;
 
-    # 当添加员工时, 要选择的角色, 角色暂时不能可视话添加
-    public $role = false;
-
     /**
      * @inheritdoc
      */

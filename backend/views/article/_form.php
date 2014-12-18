@@ -8,6 +8,7 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Article */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="article-form">
@@ -22,9 +23,11 @@ use dosamigos\ckeditor\CKEditor;
 
     <?= $form->field($model, 'is_top')->checkbox() ?>
 
-    <?= $form->field($model, 'top_rank')->textInput() ?>
+    <?= $form->field($model, 'top_rank')->textInput(['value' => $model->top_rank ?: 0]) ?>
 
     <?= $form->field($model, 'is_draft')->checkbox() ?>
+
+    <?= $form->field($model, 'article_category')->checkboxList($KVCategory) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

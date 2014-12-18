@@ -5,6 +5,8 @@ namespace backend\controllers;
 use Yii;
 
 use backend\models\Article;
+use backend\models\Category;
+use backend\models\ArticleCategory;
 use backend\models\ArticleSearch;
 
 use yii\data\ActiveDataProvider;
@@ -100,12 +102,12 @@ class ArticleController extends BackendController
     {/*{{{*/
         $model = new Article();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-        \d($model->getErrors());
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
+
         return $this->render('create', [
             'model' => $model,
+            'KVCategory' => Category::getKVCategory()
         ]);
     }/*}}}*/
 
@@ -118,14 +120,15 @@ class ArticleController extends BackendController
     public function actionUpdate($id)
     {/*{{{*/
         $model = $this->findModel($id);
+        $model->article_category = array_column(ArticleCategory::findByArticleId($id), 'category_id');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+
+        return $this->render('update', [
+            'model' => $model,
+            'KVCategory' => Category::getKVCategory()
+        ]);
     }/*}}}*/
 
     /**

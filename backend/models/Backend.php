@@ -18,4 +18,15 @@ abstract class Backend extends \yii\db\ActiveRecord
         return $s;
     }/*}}}*/
 
+    /**
+        * @brief 拼接 unique_id
+        * @param $head
+        * @param $tail
+        * @return string
+     */
+    public static function catUniqueId($head, $tail)
+    {/*{{{*/
+        return $head . '_' . $tail;
+    }/*}}}*/
+
 }

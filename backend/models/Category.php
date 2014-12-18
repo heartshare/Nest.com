@@ -21,6 +21,10 @@ use Yii;
  */
 class Category extends Backend
 {
+
+    const TRASHED = 1;
+    const UNTRASHED = 0;
+
     /**
      * @inheritdoc
      */
@@ -102,4 +106,14 @@ class Category extends Backend
     {/*{{{*/
         return $this->hasMany(StaffCategory::className(), ['category_id' => 'id']);
     }/*}}}*/
+
+    public static function getKVCategory()
+    {/*{{{*/
+        $kv = static::find()->select(['id', 'name'])
+            ->where(['is_trashed' => Category::UNTRASHED])
+            ->asArray()->all();
+        $kv = \yii\helpers\ArrayHelper::map($kv, 'id', 'name');
+        return $kv;
+    }/*}}}*/
+
 }

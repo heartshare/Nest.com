@@ -5,6 +5,7 @@ namespace backend\controllers;
 
 use Yii;
 
+use backend\models\Backend;
 use backend\models\Staff;
 use backend\models\PasswordForm;
 use backend\models\Category;
@@ -233,7 +234,7 @@ class StaffController extends BackendController
             if (isset($post['selection'])) {
 
                 foreach ($post['selection'] as $category) {
-                    $uniqueId = $staff_id . $category;
+                    $uniqueId = Backend::catUniqueId($staff_id, $category);
 
                     # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
                     $model              = StaffCategory::getByUniqueId($uniqueId);

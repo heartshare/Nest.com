@@ -14,7 +14,7 @@ class m141211_075306_staff_category extends Migration
             "id" => "pk comment '权限编号'",
             "staff_id" => "integer not null comment '员工编号'",
             "category_id" => "integer not null comment '分类编号'",
-            "unique_id" => "integer not null comment '由staff_id和category_id拼成的唯一的数字'",
+            "unique_id" => "string not null comment '由staff_id和category_id拼成的唯一的字串'",
             "can_browse" => "boolean not null default 0 comment '是否可以查看分类下所有人的内容'",
             "can_verify" => "boolean not null default 0 comment '是否可以审核分类下所有人的内容'",
             "can_curd" => "boolean not null default 0 comment '是否可以增删改查个人内容'",
