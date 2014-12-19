@@ -12,6 +12,10 @@ use yii\data\ActiveDataProvider;
  */
 class ArticleSearch extends Article
 {
+
+    # 存储 搜索前的过滤条件
+    public $where = [];
+
     public function rules()
     {/*{{{*/
         # 确定可以被搜索的字段
@@ -32,7 +36,7 @@ class ArticleSearch extends Article
         $query = Article::find()->select([
             'id', 'title', 'is_draft', 'staff_visible',
             'is_top', 'ctime', 'top_rank'
-        ]);
+        ])->where($this->where);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

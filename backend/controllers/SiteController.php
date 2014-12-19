@@ -50,11 +50,13 @@ class SiteController extends BackendController
 
 
         #\dd(Yii::$app->getUser()->can('updateOwnContent'));
-        #$auth = Yii::$app->authManager;
+        $auth = Yii::$app->authManager;
         #\dd( $auth->getAssignments( Yii::$app->getUser()->identity->id), $auth->getPermissions(), $auth->getRoles(), $auth->getRules());
 
-        #$staff_id = Yii::$app->getUser()->identity->id;
-        #\d($auth->getPermissionsByUser($staff_id ?: 1));
+        $staff_id = Yii::$app->getUser()->identity->id;
+        echo " <br> <br> <br> <br> ";
+        \d( \yii\helpers\ArrayHelper::map($auth->getPermissionsByUser($staff_id ?: 1), 'name', 'description'));
+
         #\d("<br> <br> <br> <br> <br>", Yii::$app->getSecurity()->generatePasswordHash('languo123'));
 
         return $this->render('index');

@@ -77,4 +77,18 @@ class ArticleCategory extends \yii\db\ActiveRecord
         return static::find()->where(['article_id' => $articleId])->asArray()->all();
     }/*}}}*/
 
+    /**
+    * @brief if the article_category has a record
+    * @param $article_id
+    * @param $category_id int|KVarray
+    * @return boolean
+     */
+    public static function modelExists($article_id, $category_id)
+    {/*{{{*/
+        return static::find()->where([
+            'article_id' => $article_id,
+            'category_id' => $category_id,
+        ])->exists();
+    }/*}}}*/
+
 }

@@ -263,46 +263,44 @@ class ContentController extends BackendController
     protected function getWhere()
     {/*{{{*/
 
-        $where = [];
-
         $staff_id = Yii::$app->getUser()->identity->id;
 
         $role = Yii::$app->authmanager->getRolesByUser($staff_id);
 
         # 确保领导的上级地位, 显示所有记录
-        if (! isset($role['god']) && ! isset($role['leader'])) {
-            # 当前用户可以浏览[can_browse]的分类
-            $staffCategory = StaffCategory::find()->where([
-                'staff_id' => $staff_id,
-                'can_browse' => 1,
-            ])->asArray()->all();
+        if (isset($role['god']) || isset($role['leader']))
+            return [];
 
-            $staffCategory  = array_column($staffCategory, 'category_id');
+        # 当前用户可以浏览[can_browse]的分类
+        $staffCategory = StaffCategory::find()->where([
+            'staff_id' => $staff_id,
+            'can_browse' => 1,
+        ])->asArray()->all();
 
-            $tableName = Content::tableName();
+        $staffCategory  = array_column($staffCategory, 'category_id');
 
-            $where = [
-                'and',
-                # 未被软删除
-                $tableName. '.is_trashed = 0',
-                [
-                    'or',
-                    # 创建者 等同于 拥有分类的 can_curd 权限
-                    $tableName. '.staff_id = '. $staff_id,
-                    # 拥有所属分类查看权 can_browse, 但不能查看草稿
-                    $staffCategory 
-                    ? [
-                        'and',
-                        $tableName. '.category_id in ('. implode(', ', $staffCategory). ') ',
-                        # 不是草稿
-                        $tableName. '.is_draft = 0', 
-                    ]
-                    : [],
+        $tableName = Content::tableName();
+
+        return [
+            'and',
+            # 未被软删除
+            $tableName. '.is_trashed = '. Content::UNTRASHED,
+            [
+                'or',
+                # 创建者 等同于 拥有分类的 can_curd 权限
+                $tableName. '.staff_id = '. $staff_id,
+                # 拥有所属分类查看权 can_browse, 但不能查看草稿
+                $staffCategory 
+                ? [
+                    'and',
+                    $tableName. '.category_id in ('. implode(', ', $staffCategory). ') ',
+                    # 不是草稿
+                    $tableName. '.is_draft = 0', 
                 ]
-            ];
-        }
+                : [],
+            ]
+        ];
 
-        return $where;
     }/*}}}*/
 
 }

@@ -26,13 +26,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'staff_id',
             'title',
             'content:html',
-            'is_draft',
-            'staff_visible',
-            'is_top',
+            [
+                'attribute' => 'staff_id',
+                'format' => 'raw',
+                'value' => $model->staff->name
+            ],
+            [
+                'attribute' => 'is_draft',
+                'value' => Yii::$app->params['enumData']['is_draft'][$model->is_draft]
+            ],
+            [
+                'attribute' => 'staff_visible',
+                'value' => Yii::$app->params['enumData']['staff_visible'][$model->staff_visible]
+            ],
+            [
+                'attribute' => 'is_top',
+                'value' => Yii::$app->params['enumData']['is_top'][$model->is_top]
+            ],
             'ctime:datetime',
             'top_rank',
         ],

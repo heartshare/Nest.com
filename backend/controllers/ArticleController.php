@@ -6,6 +6,7 @@ use Yii;
 
 use backend\models\Article;
 use backend\models\Category;
+use backend\models\StaffCategory;
 use backend\models\ArticleCategory;
 use backend\models\ArticleSearch;
 
@@ -21,8 +22,7 @@ use yii\filters\AccessControl;
 class ArticleController extends BackendController
 {
     public function behaviors()
-    {/*{{{*/
-        return [
+    {/*{{{*/ return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -38,9 +38,9 @@ class ArticleController extends BackendController
                         'actions' => ['view', 'update', 'delete', 'trash'],
                         'roles' => ['editor', 'inspector'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->getUser()->can($action->id.ucfirst($action->controller->id),
-                                ($action->id === 'index' || $action->id === 'create')
-                                ? ['index' => true] : [ 'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id')) ]
+                            return Yii::$app->getUser()->can(
+                                $action->id.ucfirst($action->controller->id),
+                                [ 'model' => $action->controller->findModel(Yii::$app->getRequest()->get('id')) ]
                             );
                         }
                     ],
@@ -73,6 +73,8 @@ class ArticleController extends BackendController
     {/*{{{*/
         $searchModel = new ArticleSearch;
 
+        $searchModel->where = $this->getWhere();
+
         $dataProvider = $searchModel->search(Yii::$app->request->get());
 
         return $this->render('index', [
@@ -88,8 +90,39 @@ class ArticleController extends BackendController
      */
     public function actionView($id)
     {/*{{{*/
+        $model = $this->findModel($id);
+
+        # god always be your side
+        $role = Yii::$app->authmanager->getRolesByUser(Yii::$app->getUser()->identity->id);
+        if ( ! isset($role['god']) && ! isset($role['leader'])) {
+
+            # 根据 article.staff_visible 过滤请求
+            switch ($model->staff_visible) {
+            case Article::VISIBLE_NONE:
+                $accessable = false;
+                break;
+            case Article::VISIBLE_PART_TIME:
+            case Article::VISIBLE_FULL_TIME:
+                $accessable = $this->getStaffVisibleFromStaff() === $model->staff_visible ? true : false;
+                break;
+            case Article::VISIBLE_ALL:
+                $accessable = true;
+                break;
+            }
+            if (!$accessable)
+                throw new \yii\web\ForbiddenHttpException('you have no permission to execute this action.');
+
+            # 根据 ArticleCategory 过滤请求
+            # 当前用户对应的分类
+            $staffCategory = StaffCategory::find()->select(['category_id'])
+                ->where(['staff_id' => Yii::$app->getUser()->identity->id])->asArray()->all();
+            $staffCategory = array_column($staffCategory, 'category_id');
+            if (!ArticleCategory::modelExists($model->id, $staffCategory))
+                throw new \yii\web\ForbiddenHttpException('you have no permission to execute this action.');
+        }
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }/*}}}*/
 
@@ -156,6 +189,59 @@ class ArticleController extends BackendController
         if (($model = Article::findOne($id)) !== null)
             return $model;
         throw new NotFoundHttpException('The requested page does not exist.');
+    }/*}}}*/
+
+    /**
+     * @brief get where condition before search
+     * @return array
+     */
+    protected function getWhere()
+    {/*{{{*/
+
+        # 确保领导的上级地位, 显示所有记录
+        $role = Yii::$app->authmanager->getRolesByUser(Yii::$app->getUser()->identity->id);
+        if (isset($role['god']) || isset($role['leader']))
+            return [];
+
+        $where = [
+            'and',
+            'is_draft = '. Article::NOTDRAFT,
+            # 软删除后普通角色(editor, inspector, staff)不可见
+            'is_trashed = '. Article::UNTRASHED,
+        ];
+
+        # 确定当前用户的工作时间
+        $where[] = ['staff_visible' => [$this->getStaffVisibleFromStaff(), 3]];
+
+        # 确定当前用户可以浏览的分类
+        $staffCategory = StaffCategory::find()
+            ->select(['category_id'])
+            ->where(['staff_id' => Yii::$app->getUser()->identity->id])
+            ->asArray()->all();
+
+        # 确定用户可以浏览的文章
+        $articleId = ArticleCategory::find()
+            ->select(['article_id'])
+            ->where(['category_id' => array_column($staffCategory, 'category_id')])
+            ->asArray()->all();
+        if ($articleId)
+            $where[] = ['id' => array_unique(array_column($articleId, 'article_id'))];
+
+        return $where;
+    }/*}}}*/
+
+    /**
+     * @return int
+     */
+    /**
+     * @brief get staff.time_kind for article.staff_visible,
+     * staff.time_kind + 1 === article.staff_visible
+     * @param $time_kind by default it peak current logined staff's time_kind
+     * @return int
+     */
+    protected function getStaffVisibleFromStaff($time_kind = false)
+    {/*{{{*/
+        return ($time_kind ? $time_kind : Yii::$app->getUser()->identity->time_kind) + 1;
     }/*}}}*/
 
 }

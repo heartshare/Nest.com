@@ -32,5 +32,5 @@
 
 \Yii::$container->set('dosamigos\ckeditor\CKEditor', [
     'options' => ['rows' => 6],
-    'preset' => 'basic'
+    'preset' => 'standard',
 ]);

@@ -324,6 +324,8 @@ class RbacController extends \yii\console\Controller
         $staff = $auth->createRole('staff');
         $staff->description = '员工';
         $auth->add($staff);
+        $auth->addChild($staff, $indexArticle);
+        $auth->addChild($staff, $viewArticle);
 
         ## grade level
         #         god

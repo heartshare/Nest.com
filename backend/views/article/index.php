@@ -47,8 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'ctime:datetime',
-            'top_rank',
-
             [
                 'class' => 'yii\grid\ActionColumn',
                 'buttons' => [
@@ -73,3 +71,4 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 </div>
+

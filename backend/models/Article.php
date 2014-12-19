@@ -22,6 +22,14 @@ use Yii;
 class Article extends Backend
 {
 
+    # for field.is_trashed
+    const TRASHED   = 1, UNTRASHED = 0;
+    # for field.is_draft
+    const DRAFT     = 1, NOTDRAFT  = 0;
+    # for field.staff_visible
+    const VISIBLE_NONE = 0, VISIBLE_PART_TIME = 1, VISIBLE_FULL_TIME = 2, VISIBLE_ALL = 3;
+
+
     # 保存要存入到 {{%article_category}} 中的数据
     public $article_category;
 
