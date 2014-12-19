@@ -21,6 +21,7 @@ use yii\filters\AccessControl;
  */
 class ArticleController extends BackendController
 {
+
     public function behaviors()
     {/*{{{*/ return [
             'verbs' => [
@@ -74,6 +75,7 @@ class ArticleController extends BackendController
         $searchModel = new ArticleSearch;
 
         $searchModel->where = $this->getWhere();
+        $searchModel->orderBy = $this->getOrderBy();
 
         $dataProvider = $searchModel->search(Yii::$app->request->get());
 
@@ -228,6 +230,16 @@ class ArticleController extends BackendController
             $where[] = ['id' => array_unique(array_column($articleId, 'article_id'))];
 
         return $where;
+    }/*}}}*/
+
+    /**
+    * @brief get order by condition before search
+    *
+    * @return string
+     */
+    protected function getOrderBy()
+    {/*{{{*/
+        return "is_top desc, top_rank desc";
     }/*}}}*/
 
     /**

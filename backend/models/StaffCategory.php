@@ -18,6 +18,9 @@ use Yii;
  */
 class StaffCategory extends \yii\db\ActiveRecord
 {
+
+    const CAN_CURD = 1, CANNOT_CURD = 0;
+
     /**
      * @inheritdoc
      */

@@ -99,13 +99,12 @@ class CategoryController extends BackendController
     {/*{{{*/
         $model = new Category();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
 
         return $this->render('create', [
             'model' => $model,
-            'account' => Account::find()->asArray()->all(),
+            'account' => $this->getAccount(),
         ]);
     }/*}}}*/
 
@@ -125,7 +124,7 @@ class CategoryController extends BackendController
 
         return $this->render('update', [
             'model' => $model,
-            'account' => Account::find()->asArray()->all(),
+            'account' => $this->getAccount(),
         ]);
     }/*}}}*/
 
@@ -157,5 +156,12 @@ class CategoryController extends BackendController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }/*}}}*/
+
+    protected function getAccount()
+    {
+        return Account::find()->where([
+            'is_trashed' => Account::UNTRASHED,
+        ])->asArray()->all();
+    }
 
 }

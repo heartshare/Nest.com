@@ -16,6 +16,9 @@ class ArticleSearch extends Article
     # 存储 搜索前的过滤条件
     public $where = [];
 
+    # 存储 搜索前的排序条件
+    public $orderBy = '';
+
     public function rules()
     {/*{{{*/
         # 确定可以被搜索的字段
@@ -36,7 +39,7 @@ class ArticleSearch extends Article
         $query = Article::find()->select([
             'id', 'title', 'is_draft', 'staff_visible',
             'is_top', 'ctime', 'top_rank'
-        ])->where($this->where);
+        ])->where($this->where)->orderBy($this->orderBy);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

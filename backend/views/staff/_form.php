@@ -42,7 +42,9 @@ use kartik\date\DatePicker;
 
     <?= $form->field($model, 'qq')->textInput(['maxlength' => 12]) ?>
 
-    <?= Html::img( Yii::$app->request->baseUrl . Yii::$app->params['uploadDir'] . '/' . $model->avatar, ['style' => 'height: 80px;']); ?>
+    <?php if ($model->avatar) : ?>
+        <?= Html::img( Yii::$app->request->baseUrl . Yii::$app->params['uploadDir'] . '/' . $model->avatar, ['style' => 'height: 80px;']); ?>
+    <?php endif; ?>
 
     <?= $form->field($model, 'avatar')->fileInput() ?>
 

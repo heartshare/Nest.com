@@ -22,9 +22,6 @@ use Yii;
 class Category extends Backend
 {
 
-    const TRASHED = 1;
-    const UNTRASHED = 0;
-
     /**
      * @inheritdoc
      */

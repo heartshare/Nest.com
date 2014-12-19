@@ -11,6 +11,8 @@ use Yii;
  */
 abstract class Backend extends \yii\db\ActiveRecord
 {
+    const TRASHED = 1, UNTRASHED = 0;
+
     public function scenarios()
     {/*{{{*/
         $s = parent::scenarios();

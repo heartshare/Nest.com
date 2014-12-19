@@ -39,7 +39,7 @@ class ContentController extends BackendController
             ],
             'acess' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update', 'delete', 'verify'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'verify', 'trash'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -248,10 +248,15 @@ class ContentController extends BackendController
     {/*{{{*/
         if (!$this->_category) {
             $this->_category = StaffCategory::find()->select(['category_id as id'])
-                ->where(['staff_id' => Yii::$app->getUser()->identity->id])
-                ->asArray()->all();
+                ->where([
+                    'staff_id' => Yii::$app->getUser()->identity->id,
+                    'can_curd' => StaffCategory::CAN_CURD
+                ])->asArray()->all();
 
-            $this->_category = Category::find()->where(['id' => array_column($this->_category, 'id')])->all();
+            $this->_category = Category::find()->where([
+                'id' => array_column($this->_category, 'id'),
+                'is_trashed' => Category::UNTRASHED,
+            ])->all();
         }
         return $this->_category;
     }/*}}}*/
