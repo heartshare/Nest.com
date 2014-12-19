@@ -31,8 +31,11 @@ use Yii;
 class Staff extends Backend implements \yii\web\IdentityInterface
 {
 
-    const DISABLED = 1;
-    const ENABLED = 0;
+    # for field.is_disabled
+    const DISABLED = 1, ENABLED = 0;
+
+    # for field.is_trashed
+    const TRASHED = 1, UNTRASHED = 0;
 
     /**
      * @inheritdoc

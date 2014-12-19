@@ -323,9 +323,14 @@ class StaffController extends BackendController
         }
     }/*}}}*/
 
+    /**
+     * @brief 生成上传文件的不重复名
+     * @param $extension 文件扩展名
+     * @return string
+     */
     protected function generateFileName($extension)
     {/*{{{*/
-        return uniqid( Yii::$app->params['uniqueImg']) . '.' . $extension;
+        return uniqid(Yii::$app->params['uniqueImg']) . '.' . $extension;
     }/*}}}*/
 
     /**

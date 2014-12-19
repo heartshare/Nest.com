@@ -11,12 +11,10 @@ use Yii;
  */
 abstract class BackendController extends \yii\web\Controller
 {
-    private $_model = false;
-
     /**
-      * @brief trash but not real delete a record
-      * @param $id
-      * @return page
+     * @brief trash but not real delete a record
+     * @param $id
+     * @return page
      */
     public function actionTrash($id)
     {/*{{{*/
@@ -24,9 +22,8 @@ abstract class BackendController extends \yii\web\Controller
         $model->scenario = 'trash';
         $model->is_trashed = ($model->is_trashed + 1) % 2;
         if ($model->save())
-            $this->redirect(['index']);
-        else
-            throw new \yii\web\ServerErrorHttpException('软删除 失败');
+            return $this->redirect(['index']);
+        throw new \yii\web\ServerErrorHttpException('软删除 失败');
     }/*}}}*/
 
 }
