@@ -35,12 +35,12 @@ use kartik\datetime\DateTimePicker;
         'action' => ['index'],
         'method' => 'get',
         'options' => [
-            'class' => 'form-inline',
+            'class' => 'form-inline contentSearchForm',
         ]
     ]); ?>
 
     <?= $form->field($model, 'category_id')->dropDownList(
-        ArrayHelper::map($category, 'id', 'name'),
+        $staffCategory,
         ['prompt' => ' -- please select -- ']
     ) ?>
 

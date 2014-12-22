@@ -8,6 +8,7 @@ use yii\helpers\Html;
 $this->title = 'Staff';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="staff-index">
 
     <p>
@@ -16,6 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= \yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
+        'options' => [
+            'class' => 'grid-view',
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 

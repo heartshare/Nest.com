@@ -81,7 +81,7 @@ class ContentController extends BackendController
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'category' => Category::find()->asArray()->all(),
+            'staffCategory' => $this->getStaffCategory(),
         ]);
     }/*}}}*/
 
@@ -305,6 +305,31 @@ class ContentController extends BackendController
                 : [],
             ]
         ];
+
+    }/*}}}*/
+
+    /**
+        * @brief get categories these assigned to current logined staff
+        * @return KVarray
+     */
+    protected function getStaffCategory()
+    {/*{{{*/
+
+        $roles = Yii::$app->authmanager->getRolesByUser(Yii::$app->getUser()->identity->id);
+        $cWhere = [];
+        if (! isset($roles['god']) && ! isset($roles['leader'])) {
+            $sc = StaffCategory::find() ->select(['category_id'])
+                ->where([ 'staff_id' => Yii::$app->getUser()->identity->id])
+                ->asArray()->all();
+            $cWhere = [
+                'id'          => array_column($sc, 'category_id'),
+                 'is_trashed' => Category::UNTRASHED,
+            ];
+
+        }
+        $category = Category::find()->select(['id', 'name'])->where($cWhere)->all();
+
+        return \yii\helpers\ArrayHelper::map($category, 'id', 'name');
 
     }/*}}}*/
 

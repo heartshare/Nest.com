@@ -16,7 +16,7 @@ use Yii;
  * @property Category $category
  * @property Staff $staff
  */
-class StaffCategory extends \yii\db\ActiveRecord
+class StaffCategory extends Backend
 {
 
     const CAN_CURD = 1, CANNOT_CURD = 0;
