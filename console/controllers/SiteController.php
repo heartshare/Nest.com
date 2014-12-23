@@ -15,5 +15,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         echo $this->id . '->' . $this->action->id;
+        echo "\n";
+        echo Yii::getAlias('@tests');
     }
 }

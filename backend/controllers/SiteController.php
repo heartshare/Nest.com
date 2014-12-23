@@ -69,7 +69,7 @@ class SiteController extends BackendController
 
         $model = new StaffLogin();
         if ($model->load(Yii::$app->request->post()) && $model->login())
-            return $this->goBack();
+            return $this->redirect(['content/index']);
 
         return $this->render('staffLogin', [
             'model' => $model,

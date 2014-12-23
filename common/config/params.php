@@ -37,4 +37,5 @@ return [
     'uniqueImg' => 'img',
     # upload dir, do not end with /
     'uploadDir' => 'uploads',
+    'userInitPassword' => 'languo123',
 ];
