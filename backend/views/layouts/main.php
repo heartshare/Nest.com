@@ -31,20 +31,19 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-            $menuItems = [
-                ['label' => 'Home', 'url' => ['/site/index']],
-
-                ['label' => '员工', 'url' => ['/staff']],
-                ['label' => '文章', 'url' => ['/article']],
-                ['label' => '平台', 'url' => ['/platform']],
-                ['label' => '账户', 'url' => ['/account']],
-                ['label' => '分类', 'url' => ['/category']],
-                ['label' => '内容', 'url' => ['/content']],
-            ];
+            $menuItems = [];
 
             if (Yii::$app->user->isGuest)
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             else {
+                $menuItems[] = ['label' => 'Home', 'url' => ['/site/index']];
+                $menuItems[] = ['label' => '员工', 'url' => ['/staff']];
+                $menuItems[] = ['label' => '文章', 'url' => ['/article']];
+                $menuItems[] = ['label' => '平台', 'url' => ['/platform']];
+                $menuItems[] = ['label' => '账户', 'url' => ['/account']];
+                $menuItems[] = ['label' => '分类', 'url' => ['/category']];
+                $menuItems[] = ['label' => '内容', 'url' => ['/content']];
+
                 $menuItems[] = [
                     'label' => Yii::$app->getUser()->identity->name,
                     'items' => [
@@ -63,6 +62,7 @@ AppAsset::register($this);
                         ]
                     ],
                 ];
+
             }
 
             echo Nav::widget([

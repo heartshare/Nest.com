@@ -64,6 +64,7 @@ class SiteController extends BackendController
 
     public function actionLogin()
     {/*{{{*/
+
         if (!\Yii::$app->user->isGuest)
             return $this->goHome();
 
