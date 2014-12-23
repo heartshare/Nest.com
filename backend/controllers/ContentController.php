@@ -78,10 +78,14 @@ class ContentController extends BackendController
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $staffCategory = $this->getStaffCategory();
+        $categoryContentNum = $this->getCategoryContentNum(array_keys($staffCategory));
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'staffCategory' => $this->getStaffCategory(),
+            'staffCategory' => $staffCategory,
+            'categoryContentNum' => $categoryContentNum,
         ]);
     }/*}}}*/
 
@@ -331,6 +335,17 @@ class ContentController extends BackendController
 
         return \yii\helpers\ArrayHelper::map($category, 'id', 'name');
 
+    }/*}}}*/
+
+    protected function getCategoryContentNum(array $categoryIds)
+    {/*{{{*/
+        $num = array_map(function ($item) {
+            return Content::find()->where([
+                'category_id' => $item,
+                'is_trashed' => Content::UNTRASHED,
+            ])->count();
+        }, $categoryIds);
+        return array_combine($categoryIds, $num);
     }/*}}}*/
 
 }

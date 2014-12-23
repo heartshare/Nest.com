@@ -17,15 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <h4>分类</h4>
         <?php if ($staffCategory): ?>
 
-        <ul class="nav nav-pills">
+        <ul class="list-group">
             <?php foreach ($staffCategory as $k => $v): ?>
-            <li> <?= Html::a($v,
-                'javascript:void(0)', 
-                [
+            <li class="list-group-item">
+            <span class="badge"> <?= $categoryContentNum[$k] ?></span>
+                <?= Html::a($v, 'javascript:void(0)', [
                     'class' => 'categoryFilter',
                     'data' => $k,
-                ]
-            ) ?> </li>
+                ]) ?>
+            </li>
             <?php endforeach; ?>
         </ul>
         <?php
