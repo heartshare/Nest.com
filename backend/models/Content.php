@@ -52,13 +52,13 @@ class Content extends Backend
     public function rules()
     {/*{{{*/
         return [
-            [['category_id', 'title', 'album', 'content', 'expect_send_at', 'source_url', 'is_draft', 'is_important'], 'required'],
+            [['category_id', 'title', 'content', 'expect_send_at', 'source_url', 'is_draft', 'is_important'], 'required'],
             [['is_trashed', 'category_id', 'staff_id', 'is_draft', 'is_important', 'mtime', 'modified_staff_id', 'is_verified', 'verified_at', 'rate', 'verified_staff_id', 'is_published', 'actual_send_at', 'reprint_num', 'comment_num', 'rank'], 'integer'],
             [['title'], 'string', 'max' => 30],
             [['content', 'source_url', 'remark', 'publiced_url'], 'string', 'max' => 255],
             [['source_url', 'publiced_url'], 'url'],
             [['is_verified', 'rate', 'remark'], 'required', 'on' => 'verify'],
-
+            ['album', 'match', 'pattern' => '/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)\.jpg$/i', 'message' => 'invalide photo uri'],
         ];
     }/*}}}*/
 

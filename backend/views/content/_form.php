@@ -37,7 +37,7 @@ use kartik\datetime\DateTimePicker;
     <?= $form->field($model, 'album[]')->label('图片 1')->textInput(['value' => $model->album[0]]) ?>
 
     <p> 添加
-        <?= Html::a('4', 'javascript:void(0)', ['id' => 'add4']) ?>
+        <?= Html::a('8', 'javascript:void(0)', ['id' => 'addLink']) ?>
         个图片
     </p>
 
@@ -64,17 +64,19 @@ use kartik\datetime\DateTimePicker;
 
             clickTimes = 0;
             startNum = 2;
+            step = 8; // only [2, 4, 8]
 
-            $('#add4').click(function () {
-                if (clickTimes >= 2) {
+            $('#addLink').click(function () {
+                if (clickTimes >= 8 / step) {
                     alert('最多可添加9张');
                     return false;
                 }
-                for (i = startNum; i < startNum + 4; i ++) {
+                for (i = startNum; i < startNum + step; i ++) {
                     $('#albumDiv' +  i ).css('display', 'block');
                 }
-                startNum += 4;
+                startNum += step;
                 clickTimes ++;
+                $(this).parent().css('display', 'none');
             });
 
         ", \yii\web\View::POS_READY);
