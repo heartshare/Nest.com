@@ -16,7 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-2">
         <h4>分类</h4>
         <?php if ($staffCategory): ?>
-        <ul class="list-unstyled">
+
+        <ul class="nav nav-pills">
             <?php foreach ($staffCategory as $k => $v): ?>
             <li> <?= Html::a($v,
                 'javascript:void(0)', 
@@ -155,3 +156,4 @@ $this->params['breadcrumbs'][] = $this->title;
         $('[data-toggle=\"tooltip\"]').tooltip(); 
     ", \yii\web\View::POS_READY);
 ?>
+
