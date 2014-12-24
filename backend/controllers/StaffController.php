@@ -234,17 +234,13 @@ class StaffController extends BackendController
             if (isset($post['selection'])) {
 
                 foreach ($post['selection'] as $category) {
-                    $uniqueId = Backend::catUniqueId($staff_id, $category);
 
-                    # 根据用户编号/分类编号确定/获取/更新 表staff_category中唯一的一条记录
-                    $model              = StaffCategory::getByUniqueId($uniqueId);
+                    $model              = new StaffCategory;
                     $model->staff_id    = $staff_id;
                     $model->category_id = $category;
-                    $model->unique_id   = $uniqueId;
+                    $model->unique_id   = Backend::catUniqueId($staff_id, $category);
 
-                    # 重置所有权限
-                    $model->can_browse  = $model->can_verify = $model->can_curd = 0;
-                    $permissionArr = isset($post['staff_category'][$category]) ? $post['staff_category'][$category]: false;
+                    $permissionArr = isset($post['staff_category'][$category]) ? $post['staff_category'][$category] : false;
                     if ($permissionArr) {
                         foreach ($permissionArr as $permission) {
                             $model->$permission = 1;
@@ -255,7 +251,6 @@ class StaffController extends BackendController
                     if (!$model->save())
                         $message = [
                             'status' => false,
-                            #'info' => $model->getErrors()
                             'info' => '分配失败'
                         ];
                 }
