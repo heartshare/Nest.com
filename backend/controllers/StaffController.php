@@ -28,6 +28,12 @@ use yii\filters\VerbFilter;
 class StaffController extends BackendController
 {
 
+    public function init()
+    {
+        parent::init();
+        $this->queryModel = Staff::find();
+    }
+
     public function behaviors()
     {/*{{{*/
         return [
@@ -300,22 +306,6 @@ class StaffController extends BackendController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }/*}}}*/
-
-    /**
-     * Finds the Staff model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Staff the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {/*{{{*/
-        if (($model = Staff::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }/*}}}*/
 
     /**

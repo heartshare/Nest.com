@@ -38,6 +38,7 @@ AppAsset::register($this);
             else {
                 $menuItems[] = ['label' => 'Home', 'url' => ['/site/index']];
                 $menuItems[] = ['label' => '员工', 'url' => ['/staff']];
+                $menuItems[] = ['label' => '角色', 'url' => ['/role']];
                 $menuItems[] = ['label' => '文章', 'url' => ['/article']];
                 $menuItems[] = ['label' => '平台', 'url' => ['/platform']];
                 $menuItems[] = ['label' => '账户', 'url' => ['/account']];

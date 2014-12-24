@@ -218,22 +218,6 @@ class ContentController extends BackendController
         parent::actionTrash($id);
     }/*}}}*/
 
-    /**
-     * Finds the Content model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Content the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {/*{{{*/
-        if ($this->_model)
-            return $this->_model;
-        if (($this->_model = Content::findOne($id)) !== null)
-            return $this->_model;
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }/*}}}*/
-
     # split album from string to array, add to $model->album
     # generate album image html, add to $model->albumHtml
     # @param \yii\base\Model $model

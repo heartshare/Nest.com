@@ -19,6 +19,13 @@ return [
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            #'db' => new \yii\db\Connection([
+            #    'dsn'         => 'mysql:host=localhost;dbname=blue',
+            #    'username'    => 'root',
+            #    'password'    => '',
+            #    'tablePrefix' => '',
+            #    'charset'     => 'utf8',
+            #]),
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
